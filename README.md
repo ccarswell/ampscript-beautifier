@@ -1,9 +1,12 @@
 # ampscript-beautifier
-Brackets extension to make Marketing Cloud AMPscript beautiful.
+Make AMPscript beautiful again!
+
+This Brackets extension reformats existing AMPscript (from Salesforce.com Marketing Cloud/ExactTarget) for better readability.
 
 # Installation
 - Download Brackets here: http://brackets.io/
 - Install Extension using this Git repository https://github.com/ccarswell/ampscript-beautifier/
+- Run by pressing Ctrl+Shift+A or by going to Help > AMPscript Beautifier
 
 ## Features
 
@@ -14,7 +17,11 @@ Brackets extension to make Marketing Cloud AMPscript beautiful.
 
 ## Todo
 - Standardized function formatting
+- Improved error reporting (currently just errors to Console)
+- Icon on right pane
 
+## Bugs
+- Doesn't play well with other HTML just yet, use separately without HTML included
 
 ## Resources
-Parser generated using https://pegjs.org/
+- Parser generated using https://pegjs.org/
