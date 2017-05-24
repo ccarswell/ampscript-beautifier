@@ -151,7 +151,6 @@ define(function (require) {
 			function upperCaser(arrayItem) {
 
 				var arrayItemLower = arrayItem.toLowerCase() //NOTE: Converting the arrayitem to lowercase
-
 				var controlsArray = ["for", "do", "downto", "to", "if", "else", "elseif", "endif", "then", "next", "and", "or"]
 
 				for (var x = 0; x < controlsArray.length; x++) {
@@ -312,7 +311,6 @@ define(function (require) {
 				}
 			}
 			return (json)
-
 		}
 
 		//NOTE: This function spaces out the final output (used instead of .join(' '))
