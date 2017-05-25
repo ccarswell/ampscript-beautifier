@@ -6,7 +6,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 # Installation
 - Download Brackets here: http://brackets.io/
 - Install Extension using this Git repository https://github.com/ccarswell/ampscript-beautifier/
-- Run by pressing Ctrl+Shift+A or by going to Help > AMPscript Beautifier
+- Run by pressing Ctrl+Shift+A or by going to Edit > AMPscript Beautifier
 
 ## Features
 
@@ -17,8 +17,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 
 ## Todo
 - Standardized function formatting
-- Improved error reporting (currently just errors to Console)
-- Icon on right pane
+- Improved error reporting (currently just errors to Brackets Console)
 
 ## Bugs
 - Doesn't play well with other HTML just yet, use separately without HTML included
