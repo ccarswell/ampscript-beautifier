@@ -4,6 +4,7 @@ define(function (require) {
 	var COMMAND_ID = PREFIX + '.ampscriptify';
 	var COMMAND_PARSE_ID = PREFIX + '.parse';
 	var COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug';
+	var debugMenu = false;
 
 	/* beautify preserve:start */
 	var AppInit            = brackets.getModule('utils/AppInit');
@@ -1186,11 +1187,14 @@ define(function (require) {
 	}
 
 	AppInit.appReady(function () {
-		var helpMenu = Menus.getMenu(Menus.AppMenuBar.HELP_MENU);
+		var editMenu = Menus.getMenu(Menus.AppMenuBar.EDIT_MENU);
+		editMenu.addMenuDivider();
 		CommandManager.register("AMPscript Beautifier", COMMAND_PARSE_ID, startCommandNormal);
-		helpMenu.addMenuItem(COMMAND_PARSE_ID, "Ctrl-Shift-A");
+		editMenu.addMenuItem(COMMAND_PARSE_ID, "Ctrl-Shift-A");
 
-		CommandManager.register("AMPscript Beautifier Debug", COMMAND_PARSE_ID_DEBUG, startCommandDebug);
-		helpMenu.addMenuItem(COMMAND_PARSE_ID_DEBUG, "Ctrl-Shift-X");
+		if (debugMenu === true) {
+			CommandManager.register("AMPscript Beautifier Debug", COMMAND_PARSE_ID_DEBUG, startCommandDebug);
+			helpMenu.addMenuItem(COMMAND_PARSE_ID_DEBUG, "Ctrl-Shift-X");
+		}
 	});
 });
