@@ -404,7 +404,7 @@ define(function (require) {
 
 					} else if (json[i]["StringEnd"] === true &&
 						json[i + 1]["Text"] != ")" //NOTE: Dont add a space after if its the end of a function) 
-					) { 
+					) {
 
 						//NOTE: Space should be added before starting a string
 						json.splice(i + 1, 0, {

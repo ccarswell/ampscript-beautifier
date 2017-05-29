@@ -1,6 +1,6 @@
 {
     "name": "ampscript.beautifier",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "title": "AMPscript Beautifier",
     "description": "Make AMPscript beautiful again!",
     "engines": {
