@@ -416,24 +416,26 @@ define(function (require) {
 						//							Text: " ",
 						//							String: true
 						//						})
-
+					
+					//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
-						json[i + 1]["Text"] != ")" //NOTE: Dont add a space after if its the end of a function) 
+						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function) 
+						json[i + 1]["Text"] != "," //NOTE: Dont add a space if the next item is a comma
 					) {
 
-						//NOTE: Space should be added before starting a string
 						json.splice(i + 1, 0, {
 							Id: "AfterStringEnd",
 							Text: " ",
 							String: true
 						})
-
+					//NOTE: Parsing string contents
 					} else if (
 						json[i]["Id"] != "StringWhiteSpace" && //NOTE: Needed to stop an infinite loop
 						json[i + 1]["StringEnd"] != true && //NOTE: If next item is the end of the string, dont add a space
 						json[i - 1]["Id"] != "BeforeStringStart" && //NOTE: Dont add an initial space after the quote
 						json[i]["Id"] != "AfterStringEnd" && //NOTE: Dont add a space after the end of the string
-						json[i + 1]["Text"] != ")" //NOTE: Dont add a space after if its the end of a function
+						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function
+						json[i + 1]["Text"] != "," //NOTE: Dont add a space if the next item is a comma						
 					) {
 						//NOTE: Add a space after
 						json.splice(i + 1, 0, {
