@@ -13,6 +13,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 - Indents IF statements correctly (including nested IF statements)
 - Uppercases all controls and functions (IF, THEN, DO, UPSERTDATA etc.)
 - Standardizes indenting by removing excessive whitespace
+- Stanardized strings formatting
 
 
 ## Todo
