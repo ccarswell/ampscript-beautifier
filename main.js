@@ -1,6 +1,6 @@
 define(function (require) {
 	'use strict';
-	var PREFIX = 'chris.ampscriptify';
+	var PREFIX = 'carswell.ampscriptify';
 	var COMMAND_ID = PREFIX + '.ampscriptify';
 	var COMMAND_PARSE_ID = PREFIX + '.parse';
 	var COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug';
@@ -103,7 +103,7 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: This changes the indent value of each array object but doesn't apply the formatting yet
+		//NOTE: This changes the indent property of each json object but doesn't apply the formatting yet
 		function tabber(json) {
 
 			var nestLevel = 0;
@@ -123,11 +123,16 @@ define(function (require) {
 					//NOTE: Don't format the comment text
 				} else {
 					//NOTE: Perform the rest of the formatting
-
 					var item = json[i]["Text"].toLowerCase();
 
 					if (item === "then" && json[i]["String"] === false) {
-						nestLevel++; //permanently go up a level
+						nestLevel++; //NOTE: Permanently go up a level
+					}
+
+					//NOTE: Increase nestLevel if function ( and linebreak is found
+					if (json[i]["Text"] === "(" && json[i + 1]["Text"] === "@@LINEBREAK" && json[i]["String"] === false) {
+						nestLevel++; //NOTE: Permanently go up a level
+						var inFunction = true
 					}
 
 					if (nestLevel > 0) {
@@ -140,10 +145,11 @@ define(function (require) {
 								//NOTE: Slice array to only get from here until the end
 								var arraySlice = json.slice(i + 1)
 
-								//NOTE: Now that we have a smaller array, lets search through it
+								//NOTE: Now that we have a smaller array, lets search through it to find the end
 								function findEnd(arrayItem) {
 									return (arrayItem["Text"] !== "@@INDENT")
 								}
+
 								//NOTE: Finding the index of where the indentation stops
 								var endIndex = arraySlice.findIndex(findEnd)
 
@@ -158,9 +164,18 @@ define(function (require) {
 								}
 							}
 
-							json[i + 1]["Indent"] = nestLevel //NOTE: Next line is set to current level
+							json[i + 1]["Indent"] = nestLevel //NOTE: Next liness are set to current nestLevel
 
 						}
+						
+						//NOTE: End of function
+						if (json[i]["Text"] === ")" && inFunction === true) {
+							json[i]["Indent"] = nestLevel - 1 //NOTE: Closing ")" has same indent as original opening "("
+							nestLevel--; //NOTE: Permanently go down a level
+							inFunction = false
+
+						}
+
 						if (item === "else" || item === "elseif" || item === "endif") {
 							json[i]["Indent"] = nestLevel - 1 //NOTE: Temporarily go back one
 							if (item === "endif" || item === "elseif") {
