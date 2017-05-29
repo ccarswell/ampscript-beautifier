@@ -357,30 +357,64 @@ define(function (require) {
 
 		//NOTE: This function spaces out the final output (used instead of .join(' '))
 		//NOTE: No existing spaces are arriving in the array, they all need to be added
-		function outputSpacer(arr) {
 
-			for (var i = 0; i < arr.length; i++) {
+		function outputSpacer(json) {
 
-				var spliceItem = " "
-				var debugVal = arr[i];
-				if (arr[i] != " " && //NOTE: Not a recently spliced space
-					arr[i].includes("\t") === false &&
-					arr[i] != "%%[" &&
-					arr[i] != "]%%" &&
-					arr[i].includes("\n") === false &&
-					arr[i + 1] != "\n" &&
-					arr[i + 1] != "(" &&
-					arr[i] != "(" &&
-					arr[i + 1] != ")"
-//					arr[i] != "\""
-//					arr[i + 1] != "\""
+			for (var i = 0; i < json.length; i++) {
+
+				var debugVal = json[i]["Text"];
+				var debugString = json[i]["String"];
+
+				//NOTE: No spaces after these
+				if (json[i]["String"] === true && json[i]["Id"] != "StringWhiteSpace") {
+
+					if (json[i]["Text"] === "\"") {
+						//don't change the spacing
+
+					} else if (json[i + 1]["Text"] === "\"") {
+						//don't change the spacing
+
+					} else {
+						//add a space after
+						json.splice(i + 1, 0, {
+							Id: "StringWhiteSpace",
+							Text: " ",
+							String: true
+						})					
+					
+					}
+
+				}
+
+
+				if (json[i]["String"] === false &&
+					json[i]["Text"] != " " && //NOTE: Not a recently spliced space
+					json[i]["Text"].includes("\t") === false &&
+					json[i]["Text"] != "%%[" &&
+					json[i]["Text"] != "]%%" &&
+					json[i]["Text"].includes("\n") === false &&
+					json[i + 1]["Text"] != "\n" &&
+					json[i + 1]["Text"] != "(" &&
+					json[i]["Text"] != "(" &&
+					json[i + 1]["Text"] != ")" &&
+					json[i]["Text"] != "\"" //no spaces after finding quotes
 				) {
-					arr.splice(i + 1, 0, spliceItem)
+					json.splice(i + 1, 0, {
+						Text: " ",
+						String: false
+					})
 				} else {
 					//NOTE: Do nothing
 				}
 			}
-			return (arr)
+
+			//NOTE: Return in an array
+			var outputResultArr = [];
+			for (var i = 0; i < json.length; i++) {
+				outputResultArr.push(json[i]["Text"])
+			}
+
+			return (outputResultArr)
 		}
 
 		//////////////////
@@ -394,10 +428,7 @@ define(function (require) {
 		var result = outputFormattingResults
 
 		//NOTE: Gathering the text before the final join
-		var outputResultArr = [];
-		for (var i = 0; i < result.length; i++) {
-			outputResultArr.push(result[i]["Text"])
-		}
+
 
 		if (debug === true) {
 			//DEBUGGING: Use this version to see the array results.  Must select all first before running.
@@ -405,7 +436,8 @@ define(function (require) {
 			return (outputResultArr)
 		} else {
 			//NOTE: Putting the array back together again, else it appears on separate lines.
-			var spacedOut = outputSpacer(outputResultArr)
+			//			var spacedOut = outputSpacer(outputResultArr)
+			var spacedOut = outputSpacer(result)
 			return (spacedOut.join(''))
 		}
 	}
