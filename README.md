@@ -19,6 +19,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 ## Todo
 - Standardized function formatting
 - Improved error reporting (currently just errors to Brackets Console)
+- Integration with HTML
 
 ## Bugs
 - Doesn't play well with other HTML just yet, use separately without HTML included
