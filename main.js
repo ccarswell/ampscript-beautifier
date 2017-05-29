@@ -4,7 +4,7 @@ define(function (require) {
 	var COMMAND_ID = PREFIX + '.ampscriptify';
 	var COMMAND_PARSE_ID = PREFIX + '.parse';
 	var COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug';
-	var debugMenu = false;
+	var debugMenu = true;
 
 	/* beautify preserve:start */
 	var AppInit            = brackets.getModule('utils/AppInit');
@@ -51,6 +51,8 @@ define(function (require) {
 			obj["Indent"] = 0
 			obj["LineBreak"] = 0
 			obj["String"] = false
+			obj["StringStart"] = false
+			obj["StringEnd"] = false
 			JSONObj.push(obj)
 		}
 		return (JSONObj)
@@ -84,6 +86,10 @@ define(function (require) {
 						var startString = i;
 						var endString = i + 1 + endIndex;
 						var deltaString = endString - startString + 1
+
+						//NOTE: Assigning properties for parsing later
+						json[i]["StringStart"] = true
+						json[endString]["StringEnd"] = true
 
 						while (deltaString !== 0) {
 
@@ -357,6 +363,7 @@ define(function (require) {
 
 		//NOTE: This function spaces out the final output (used instead of .join(' '))
 		//NOTE: No existing spaces are arriving in the array, they all need to be added
+		//WIP
 
 		function outputSpacer(json) {
 
@@ -366,46 +373,62 @@ define(function (require) {
 				var debugString = json[i]["String"];
 
 				//NOTE: No spaces after these
-				if (json[i]["String"] === true && json[i]["Id"] != "StringWhiteSpace") {
+				if (json[i]["String"] === false) {
+					if (json[i]["Text"] != " " && //NOTE: Not a recently spliced space
+						json[i]["Text"].includes("\t") === false &&
+						json[i]["Text"] != "%%[" &&
+						json[i]["Text"] != "]%%" &&
+						json[i]["Text"].includes("\n") === false &&
+						json[i + 1]["Text"] != "\n" &&
+						json[i + 1]["Text"] != "(" &&
+						json[i]["Text"] != "(" &&
+						json[i + 1]["Text"] != ")"
+					) {
+						json.splice(i + 1, 0, {
+							Text: " ",
+							String: false
+						})
+					}
+				}
 
-					if (json[i]["Text"] === "\"") {
-						//don't change the spacing
+				if (json[i]["String"] === true) {
 
-					} else if (json[i + 1]["Text"] === "\"") {
-						//don't change the spacing
+					if (json[i]["StringStart"] === true && json[i - 1]["Id"] != "BeforeStringStart") {
 
-					} else {
-						//add a space after
+						//FUTURE: Additional formatting for before strings if required
+						//						json.splice(i, 0, {
+						//							Id: "BeforeStringStart",
+						//							Text: " ",
+						//							String: true
+						//						})
+
+					} else if (json[i]["StringEnd"] === true &&
+						json[i + 1]["Text"] != ")" //NOTE: Dont add a space after if its the end of a function) 
+					) { 
+
+						//NOTE: Space should be added before starting a string
+						json.splice(i + 1, 0, {
+							Id: "AfterStringEnd",
+							Text: " ",
+							String: true
+						})
+
+					} else if (
+						json[i]["Id"] != "StringWhiteSpace" && //NOTE: Needed to stop an infinite loop
+						json[i + 1]["StringEnd"] != true && //NOTE: If next item is the end of the string, dont add a space
+						json[i - 1]["Id"] != "BeforeStringStart" && //NOTE: Dont add an initial space after the quote
+						json[i]["Id"] != "AfterStringEnd" && //NOTE: Dont add a space after the end of the string
+						json[i + 1]["Text"] != ")" //NOTE: Dont add a space after if its the end of a function
+					) {
+						//NOTE: Add a space after
 						json.splice(i + 1, 0, {
 							Id: "StringWhiteSpace",
 							Text: " ",
 							String: true
-						})					
-					
+						})
 					}
-
 				}
 
-
-				if (json[i]["String"] === false &&
-					json[i]["Text"] != " " && //NOTE: Not a recently spliced space
-					json[i]["Text"].includes("\t") === false &&
-					json[i]["Text"] != "%%[" &&
-					json[i]["Text"] != "]%%" &&
-					json[i]["Text"].includes("\n") === false &&
-					json[i + 1]["Text"] != "\n" &&
-					json[i + 1]["Text"] != "(" &&
-					json[i]["Text"] != "(" &&
-					json[i + 1]["Text"] != ")" &&
-					json[i]["Text"] != "\"" //no spaces after finding quotes
-				) {
-					json.splice(i + 1, 0, {
-						Text: " ",
-						String: false
-					})
-				} else {
-					//NOTE: Do nothing
-				}
 			}
 
 			//NOTE: Return in an array
