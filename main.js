@@ -26,8 +26,38 @@ define(function (require) {
 	//NOTE: Retrieving Text
 	function ampscriptify(debug) {
 
-		var unformattedText = DocumentManager.getCurrentDocument();
-		var toParse = unformattedText.getText();
+		function convertArrToJSON(arr) {
+			var JSONObj = []
+			for (var i = 0; i < arr.length; i++) {
+				var obj = {}
+				obj["Id"] = i
+				obj["Text"] = arr[i]
+				obj["Indent"] = 0
+				obj["LineBreak"] = 0
+				obj["String"] = false
+				obj["StringStart"] = false
+				obj["StringEnd"] = false
+				JSONObj.push(obj)
+			}
+			return (JSONObj)
+		}
+
+		var editor = EditorManager.getCurrentFullEditor();
+		if (editor.hasSelection()) {
+
+			var unformattedText = editor.getSelectedText();
+			var range = editor.getSelection();
+			var toParse = unformattedText
+
+		} else {
+
+			var unformattedText = DocumentManager.getCurrentDocument();
+			var toParse = unformattedText.getText();
+
+		}
+
+		//		var unformattedText = DocumentManager.getCurrentDocument();
+		//		var toParse = unformattedText.getText();
 		var parsed = pegjs(toParse);
 		var formattedText = parsed.parse; //NOTE: Parsed into array items
 		var json = convertArrToJSON(formattedText)
@@ -37,25 +67,16 @@ define(function (require) {
 		var editor = EditorManager.getCurrentFullEditor();
 
 		if (newformat !== toParse) {
-			batchUpdate(newformat, editor.hasSelection());
+			if (range) {
+				batchUpdate(newformat, range)
+			} else {
+				batchUpdate(newformat, editor.hasSelection());
+			}
+
 		}
 	}
 
-	function convertArrToJSON(arr) {
-		var JSONObj = []
-		for (var i = 0; i < arr.length; i++) {
-			var obj = {}
-			obj["Id"] = i
-			obj["Text"] = arr[i]
-			obj["Indent"] = 0
-			obj["LineBreak"] = 0
-			obj["String"] = false
-			obj["StringStart"] = false
-			obj["StringEnd"] = false
-			JSONObj.push(obj)
-		}
-		return (JSONObj)
-	}
+
 
 	function reformatter(json, debug) {
 
@@ -383,13 +404,13 @@ define(function (require) {
 				var debugString = json[i]["String"];
 
 				//NOTE: No spaces after these
-				if (json[i]["String"] === false) {
+				if (json[i]["String"] === false && json[i + 1]) {
 					if (json[i]["Text"] != " " && //NOTE: Not a recently spliced space
 						json[i]["Text"].includes("\t") === false &&
 						json[i]["Text"] != "%%[" &&
 						json[i]["Text"] != "]%%" &&
 						json[i]["Text"].includes("\n") === false &&
-						json[i + 1]["Text"] != "\n" &&
+						json[i + 1]["Text"] != "\n" && //Errors here
 						json[i + 1]["Text"] != "(" &&
 						json[i]["Text"] != "(" &&
 						json[i + 1]["Text"] != ")"
