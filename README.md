@@ -12,17 +12,18 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 
 - Indents IF statements correctly (including nested IF statements)
 - Uppercases all controls and functions (IF, THEN, DO, UPSERTDATA etc.)
-- Standardizes indenting by removing excessive whitespace
+- Standardized indenting by removing excessive whitespace (fixes bad user formatting)
 - Standardized string formatting
-
+- Standardized function formatting
+- Formatting can be applied to either all code or selected code
 
 ## Todo
-- Standardized function formatting
+
 - Improved error reporting (currently just errors to Brackets Console)
 - Integration with HTML
 
 ## Bugs
-- Doesn't play well with other HTML just yet, use separately without HTML included
+- Doesn't play well with other HTML just yet, only select text within AMPscript blocks
 
 ## Resources
 - Parser generated using https://pegjs.org/
