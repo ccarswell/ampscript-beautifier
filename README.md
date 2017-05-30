@@ -86,9 +86,9 @@ You can also get the latest work-in-progress version by downloading or installin
 - Click on Install from URL...
 - Copy and paste following URL in the text field: https://github.com/ccarswell/ampscript-beautifier/
 - Click Install
-- Install from file system
 
-## Download this extension using the ZIP button and unzip it (latest version)
+## Install from file system (latest version)
+- Download this extension using the ZIP button and unzip it 
 - Copy it in Brackets' /extensions/user folder by selecting Show Extension Folder in the Help menu
 - Reload Brackets
 
