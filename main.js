@@ -71,8 +71,6 @@ define(function (require) {
 		}
 	}
 
-
-
 	function reformatter(json, debug) {
 
 		//NOTE: This function determines whether we are parsing a string and assigned it a property of ["String"] = true if so
@@ -85,6 +83,9 @@ define(function (require) {
 
 						json[i]["String"] = true
 						json[i + 1]["String"] = true
+						json[i]["StringStart"] = true
+						json[i + 1]["StringEnd"] = true						
+						
 
 					} else if (json[i + 1]["Text"] !== "\"" && json[i]["String"] !== true) {
 
@@ -431,7 +432,8 @@ define(function (require) {
 						//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
 						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function) 
-						json[i + 1]["Text"] != "," //NOTE: Dont add a space if the next item is a comma
+						json[i + 1]["Text"] != "," && //NOTE: Dont add a space if the next item is a comma
+						json[i + 1]["Text"] != "\"" //NOTE: Dont add a space if the next item is a comma
 					) {
 
 						json.splice(i + 1, 0, {
