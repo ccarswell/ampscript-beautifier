@@ -73,9 +73,9 @@ You can also get the latest work-in-progress version by downloading or installin
 - Click the Available tab in upper left corner.
 - Find *AMPscript Beautifier* in list of extensions (use the search field to filter the list).
 - Click Install
-- Install from URL
 
-## Open the the Extension Manager from the File menu
+## Install from URL
+- Open the the Extension Manager from the File menu
 - Click on Install from URL...
 - Copy and paste following URL in the text field: https://github.com/ccarswell/ampscript-beautifier/
 - Click Install
