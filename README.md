@@ -4,12 +4,34 @@ Make AMPscript beautiful again!
 This Brackets extension reformats existing AMPscript (from Salesforce.com Marketing Cloud/ExactTarget) for better readability.
 
 # Installation
-- Download Brackets here: http://brackets.io/
-- Install Extension using this Git repository https://github.com/ccarswell/ampscript-beautifier/
+
+Download Brackets here: http://brackets.io/
+
+You may download and install this extension in one of three ways. Using Extension Manager to find it through the extension registry you always find the latest stable release conveniently within Brackets.
+
+You can also get the latest work-in-progress version by downloading or installing the extension directly from the repository. This allows you to try new features that might not have been tested properly yet.
+
+## Install using Extension Manager
+- Open the the Extension Manager from the File menu.
+- Click the Available tab in upper left corner.
+- Find *AMPscript Beautifier* in list of extensions (use the search field to filter the list).
+- Click Install
+- Install from URL
+
+## Open the the Extension Manager from the File menu.
+- Click on Install from URL...
+- Copy and paste following URL in the text field: https://github.com/ccarswell/ampscript-beautifier/
+- Click Install
+- Install from file system
+
+## Download this extension using the ZIP button and unzip it.
+- Copy it in Brackets' /extensions/user folder by selecting Show Extension Folder in the Help menu
+- Reload Brackets
+
+## Run
 - Run by pressing Ctrl+Shift+A or by going to Edit > AMPscript Beautifier
 
 ## Features
-
 - Indents IF statements correctly (including nested IF statements)
 - Uppercases all controls and functions (IF, THEN, DO, UPSERTDATA etc.)
 - Standardized indenting by removing excessive whitespace (fixes bad user formatting)
