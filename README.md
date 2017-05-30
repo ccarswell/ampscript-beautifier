@@ -68,20 +68,20 @@ You may download and install this extension in one of three ways. Using Extensio
 
 You can also get the latest work-in-progress version by downloading or installing the extension directly from the repository. This allows you to try new features that might not have been tested properly yet.
 
-## Install using Extension Manager
+## Install using Extension Manager (Recommended - Stable Release)
 - Open the the Extension Manager from the File menu.
 - Click the Available tab in upper left corner.
 - Find *AMPscript Beautifier* in list of extensions (use the search field to filter the list).
 - Click Install
 - Install from URL
 
-## Open the the Extension Manager from the File menu.
+## Open the the Extension Manager from the File menu
 - Click on Install from URL...
 - Copy and paste following URL in the text field: https://github.com/ccarswell/ampscript-beautifier/
 - Click Install
 - Install from file system
 
-## Download this extension using the ZIP button and unzip it.
+## Download this extension using the ZIP button and unzip it (latest version)
 - Copy it in Brackets' /extensions/user folder by selecting Show Extension Folder in the Help menu
 - Reload Brackets
 
