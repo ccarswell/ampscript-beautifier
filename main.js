@@ -33,7 +33,6 @@ define(function (require) {
 		var json = convertArrToJSON(formattedText)
 		var newformat = reformatter(json, debug)
 
-
 		//NOTE: Updating the window with the formatted text
 		var editor = EditorManager.getCurrentFullEditor();
 
@@ -104,7 +103,7 @@ define(function (require) {
 		}
 
 		//NOTE: This changes the indent property of each json object but doesn't apply the formatting yet
-		function tabber(json) {
+		function dabber(json) {
 
 			var nestLevel = 0;
 			var commentStartIndex;
@@ -167,7 +166,7 @@ define(function (require) {
 							json[i + 1]["Indent"] = nestLevel //NOTE: Next liness are set to current nestLevel
 
 						}
-						
+
 						//NOTE: End of function
 						if (json[i]["Text"] === ")" && inFunction === true) {
 							json[i]["Indent"] = nestLevel - 1 //NOTE: Closing ")" has same indent as original opening "("
@@ -188,7 +187,6 @@ define(function (require) {
 
 			return (json)
 		}
-
 
 		//NOTE: This function ignores comments and runs the rest of the formatting
 		function ignoreComments(json) {
@@ -330,7 +328,6 @@ define(function (require) {
 					spliceObj["LineBreak"] = "NA"
 					json[i]["Indent"] = 999 //NOTE: changes the value as not to be processed again
 					json.splice(i, 0, spliceObj)
-
 				}
 
 				//NOTE: Line Breaking
@@ -347,7 +344,6 @@ define(function (require) {
 					spliceObj["LineBreak"] = "NA"
 
 					json.splice(i + 1, 0, spliceObj) // +1 to add the line break after the current item
-
 
 					//NOTE: Apply line break before this item
 				} else if (json[i]["LineBreak"] === -1) {
@@ -377,8 +373,7 @@ define(function (require) {
 		}
 
 		//NOTE: This function spaces out the final output (used instead of .join(' '))
-		//NOTE: No existing spaces are arriving in the array, they all need to be added
-		//WIP
+		//NOTE: The incoming array doesn't contain any spaces, they all need to be added
 
 		function outputSpacer(json) {
 
@@ -416,19 +411,19 @@ define(function (require) {
 						//							Text: " ",
 						//							String: true
 						//						})
-					
-					//NOTE: After string parsing
+
+						//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
 						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function) 
 						json[i + 1]["Text"] != "," //NOTE: Dont add a space if the next item is a comma
 					) {
 
 						json.splice(i + 1, 0, {
-							Id: "AfterStringEnd",
-							Text: " ",
-							String: true
-						})
-					//NOTE: Parsing string contents
+								Id: "AfterStringEnd",
+								Text: " ",
+								String: true
+							})
+							//NOTE: Parsing string contents
 					} else if (
 						json[i]["Id"] != "StringWhiteSpace" && //NOTE: Needed to stop an infinite loop
 						json[i + 1]["StringEnd"] != true && //NOTE: If next item is the end of the string, dont add a space
@@ -445,7 +440,6 @@ define(function (require) {
 						})
 					}
 				}
-
 			}
 
 			//NOTE: Return in an array
@@ -457,29 +451,28 @@ define(function (require) {
 			return (outputResultArr)
 		}
 
-		//////////////////
-		//Running things//
-		//////////////////
+		////////////////////////////////////
+		//////////Running Things////////////
+		////////////////////////////////////
 
-		var stringPropertyResult = stringProperty(json)
-		var tabberResult = tabber(stringPropertyResult)
-		var ignoreCommentsResult = ignoreComments(tabberResult)
-		var outputFormattingResults = outputFormatting(ignoreCommentsResult)
-		var result = outputFormattingResults
-
-		//NOTE: Gathering the text before the final join
-
+		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))
 
 		if (debug === true) {
-			//DEBUGGING: Use this version to see the array results.  Must select all first before running.
+			//DEBUGGING: Use this version to see the array results.  Must select all  characters in the window first before running.
+			var outputResultArr = [];
+			for (var i = 0; i < result.length; i++) {
+				outputResultArr.push(result[i]["Text"])
+			}
 			console.log(outputResultArr)
 			return (outputResultArr)
 		} else {
 			//NOTE: Putting the array back together again, else it appears on separate lines.
-			//			var spacedOut = outputSpacer(outputResultArr)
 			var spacedOut = outputSpacer(result)
 			return (spacedOut.join(''))
 		}
+
+		////////////////////////////////////
+
 	}
 
 	function batchUpdate(formattedText, isSelection) {
