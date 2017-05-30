@@ -35,6 +35,8 @@ To this:
 
 ```html
 %%[
+/* 4th level nested IF statement */
+
 IF @sk == " " AND @Debug != " " THEN
 	IF @Version == "PROD" THEN
 		SET @sk= "00390000028vpjeAAA" 
