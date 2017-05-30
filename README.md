@@ -23,7 +23,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 - Integration with HTML
 
 ## Bugs
-- Doesn't play well with other HTML just yet, only select text within AMPscript blocks
+- Doesn't play well with other HTML just yet.  If errors are occuring (or nothing happens), please select AMPscript block code only.
 
 ## Resources
 - Parser generated using https://pegjs.org/
