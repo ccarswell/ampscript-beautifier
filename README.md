@@ -59,6 +59,13 @@ ENDIF
 ]%%
 ```
 
+# Features
+- Indents IF statements correctly (including nested IF statements)
+- Uppercases all controls and functions (IF, THEN, DO, UPSERTDATA etc.)
+- Standardized indenting by removing excessive whitespace (fixes bad user formatting)
+- Standardized string formatting
+- Standardized function formatting
+- Formatting can be applied to either all code or selected code
 
 # Installation
 
@@ -85,19 +92,10 @@ You can also get the latest work-in-progress version by downloading or installin
 - Copy it in Brackets' /extensions/user folder by selecting Show Extension Folder in the Help menu
 - Reload Brackets
 
-## Run
+# Running
 - Run by pressing Ctrl+Shift+A or by going to Edit > AMPscript Beautifier
 
-## Features
-- Indents IF statements correctly (including nested IF statements)
-- Uppercases all controls and functions (IF, THEN, DO, UPSERTDATA etc.)
-- Standardized indenting by removing excessive whitespace (fixes bad user formatting)
-- Standardized string formatting
-- Standardized function formatting
-- Formatting can be applied to either all code or selected code
-
 ## Todo
-
 - Improved error reporting (currently just errors to Brackets Console)
 - Integration with HTML
 
