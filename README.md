@@ -37,7 +37,7 @@ To this:
 %%[
 /* 4th level nested IF statement */
 
-IF @sk == " " AND @Debug != " " THEN
+IF @sk == "" AND @Debug != "" THEN
 	IF @Version == "PROD" THEN
 		SET @sk= "00390000028vpjeAAA" 
 		IF @Test1 == "Test1" THEN
