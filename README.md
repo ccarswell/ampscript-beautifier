@@ -3,6 +3,57 @@ Make AMPscript beautiful again!
 
 This Brackets extension reformats existing AMPscript (from Salesforce.com Marketing Cloud/ExactTarget) for better readability.
 
+From this:
+
+```html
+/* 4th level nested IF statement */
+
+IF @sk == "" AND @Debug != "" THEN
+IF @Version == "PROD" THEN
+SET @sk="00390000028vpjeAAA"
+IF @Test1 == "Test1" THEN
+SET @Test1 == "PASS"
+IF @Test2 == "Test2" THEN
+SET @Test2 == "PASS"
+ENDIF
+ENDIF
+SET @email = "test@test.com"
+SET @Job_ID = "2336090"
+SET @List_ID = "43"
+ELSEIF @Version == "PROD" THEN
+SET @sk="003p000000Fnl4JAAR"
+SET @email = "test@test.com"
+SET @Job_ID = "2343525"
+SET @List_ID = "43"
+ENDIF
+ENDIF
+```
+
+To this:
+
+```html
+IF @sk == " " AND @Debug != " " THEN
+	IF @Version == "PROD" THEN
+		SET @sk= "00390000028vpjeAAA" 
+		IF @Test1 == "Test1" THEN
+			SET @Test1 == "PASS" 
+			IF @Test2 == "Test2" THEN
+				SET @Test2 == "PASS" 
+			ENDIF
+		ENDIF
+		SET @email = "test@test.com" 
+		SET @Job_ID = "2336090" 
+		SET @List_ID = "43" 
+	ELSEIF @Version == "PROD" THEN
+		SET @sk= "003p000000Fnl4JAAR" 
+		SET @email = "test@test.com" 
+		SET @Job_ID = "2343525" 
+		SET @List_ID = "43" 
+	ENDIF
+ENDIF
+```
+
+
 # Installation
 
 Download Brackets here: http://brackets.io/
