@@ -43,21 +43,16 @@ define(function (require) {
 		}
 
 		var editor = EditorManager.getCurrentFullEditor();
+		
 		if (editor.hasSelection()) {
-
 			var unformattedText = editor.getSelectedText();
 			var range = editor.getSelection();
 			var toParse = unformattedText
-
 		} else {
-
 			var unformattedText = DocumentManager.getCurrentDocument();
 			var toParse = unformattedText.getText();
-
 		}
 
-		//		var unformattedText = DocumentManager.getCurrentDocument();
-		//		var toParse = unformattedText.getText();
 		var parsed = pegjs(toParse);
 		var formattedText = parsed.parse; //NOTE: Parsed into array items
 		var json = convertArrToJSON(formattedText)
