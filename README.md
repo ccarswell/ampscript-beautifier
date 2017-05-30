@@ -6,6 +6,7 @@ This Brackets extension reformats existing AMPscript (from Salesforce.com Market
 From this:
 
 ```html
+%%[
 /* 4th level nested IF statement */
 
 IF @sk == "" AND @Debug != "" THEN
@@ -27,11 +28,13 @@ SET @Job_ID = "2343525"
 SET @List_ID = "43"
 ENDIF
 ENDIF
+]%%
 ```
 
 To this:
 
 ```html
+%%[
 IF @sk == " " AND @Debug != " " THEN
 	IF @Version == "PROD" THEN
 		SET @sk= "00390000028vpjeAAA" 
@@ -51,6 +54,7 @@ IF @sk == " " AND @Debug != " " THEN
 		SET @List_ID = "43" 
 	ENDIF
 ENDIF
+]%%
 ```
 
 
