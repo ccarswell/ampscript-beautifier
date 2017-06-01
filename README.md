@@ -1,7 +1,7 @@
 # ampscript-beautifier
 Make AMPscript beautiful again!
 
-This Brackets extension reformats existing AMPscript (from Salesforce.com Marketing Cloud/ExactTarget) for better readability.
+This Brackets extension reformats <a href="https://help.marketingcloud.com/en/documentation/ampscript/">AMPscript</a> (from Salesforce.com Marketing Cloud/ExactTarget) for enhanced readability.
 
 From this:
 
