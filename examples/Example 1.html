@@ -1,0 +1,69 @@
+%%[
+
+/* 1st level nested IF statement */
+IF @sk == "" AND @Debug != "" THEN
+SET @sk="00390000028vpjeAAA"
+ELSEIF @Version == "PROD" THEN
+SET @List_ID = "43"
+ENDIF
+
+/* 2nd level nested if statement */
+IF @sk == "" AND @Debug != "" THEN
+IF @Version == "PROD" THEN
+/* if page is being opened from email then subscriberkey will have a value */
+SET @sk="00390000028vpjeAAA"
+SET @email = "test@test.com"
+SET @Job_ID = "2336090"
+SET @List_ID = "43"
+ELSEIF @Version == "PROD" THEN
+SET @sk="003p000000Fnl4JAAR"
+SET @email = "test@test.com"
+SET @Job_ID = "2343525"
+SET @List_ID = "43"
+ENDIF
+ENDIF
+
+/* 3rd level nested IF statement */
+
+IF @sk == "" AND @Debug != "" THEN
+IF @Version == "PROD" THEN
+SET @sk="00390000028vpjeAAA"
+IF @Test1 == "PROD" THEN
+SET @Test1 == "PASS"
+ENDIF
+SET @email = "test@test.com"
+SET @Job_ID = "2336090"
+SET @List_ID = "43"
+ELSEIF @Version == "PROD" THEN
+SET @sk="003p000000Fnl4JAAR"
+SET @email = "test@test.com"
+SET @Job_ID = "2343525"
+SET @List_ID = "43"
+ENDIF
+ENDIF
+
+/* 4th level nested IF statement */
+
+IF @sk == "" AND @Debug != "" THEN
+IF @Version == "PROD" THEN
+SET @sk="00390000028vpjeAAA"
+IF @Test1 == "Test1" THEN
+SET @Test1 == "PASS"
+IF @Test2 == "Test2" THEN
+SET @Test2 == "PASS"
+ENDIF
+ENDIF
+SET @email = "test@test.com"
+SET @Job_ID = "2336090"
+SET @List_ID = "43"
+ELSEIF @Version == "PROD" THEN
+SET @sk="003p000000Fnl4JAAR"
+SET @email = "test@test.com"
+SET @Job_ID = "2343525"
+SET @List_ID = "43"
+ENDIF
+ENDIF
+
+]%%
+
+

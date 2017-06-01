@@ -1,0 +1,88 @@
+%%[
+
+/* pageContext indicates if the page has been posted back or not(pageContext is a hidden field on the form) */
+set @pageContext = queryparameter("pageContext")
+if empty(@pageContext) then /* Page load */
+		/* There is no postback data on page load */
+     		set @PostbackData = ""
+else /* Post back */
+		/* Visible fields */
+		 set @firstName = queryparameter("FirstName")
+		 set @lastName = queryparameter("LastName")
+		 set @emailAddress = queryparameter("EmailAddress")
+		 set @company = queryparameter("Company")
+		 
+		 /* -- Add new record -- */
+		 set @DataExtension = "All_Contacts" 
+		 
+		 /* Default to UAT */
+		 set @NumRowsAffected = InsertData(
+          @DataExtension,
+          "SubscriberKey", @emailAddress,
+          "EmailAddress", @emailAddress,
+          "firstName", @firstName,
+          "lastName", @lastName,
+          "Company", @company,
+     )
+     if @NumRowsAffected > 0 then
+    
+          /* Send welcome email */
+     
+          /*triggered send start*/
+          SET @ts = CreateObject("TriggeredSend")
+          SET @tsDef = CreateObject("TriggeredSendDefinition")
+          
+          set @TriggeredEmailToSend = "404644"
+          SetObjectProperty(@tsDef, "CustomerKey", @TriggeredEmailToSend)
+          SetObjectProperty(@ts, "TriggeredSendDefinition", @tsDef)
+          SET @ts_sub = CreateObject("Subscriber")
+          SetObjectProperty(@ts_sub, "EmailAddress", @emailAddress)
+          SetObjectProperty(@ts_sub, "SubscriberKey", @emailAddress) 
+          IF NOT IsNull(@fn) THEN
+                SET @ts_attr = CreateObject("Attribute")
+                SetObjectProperty(@ts_attr, "Name", "FirstName")
+                SetObjectProperty(@ts_attr, "Value", @firstName)
+                AddObjectArrayItem(@ts_sub, "Attributes", @ts_attr)
+          ENDIF
+          IF NOT IsNull(@ln) THEN
+                SET @ts_attr = CreateObject("Attribute")
+                SetObjectProperty(@ts_attr, "Name", "LastName")
+                SetObjectProperty(@ts_attr, "Value", @lastName)
+                AddObjectArrayItem(@ts_sub, "Attributes", @ts_attr)
+          ENDIF
+          IF NOT IsNull(@email) THEN
+                SET @ts_attr = CreateObject("Attribute")
+                SetObjectProperty(@ts_attr, "Name", "EmailAddress")
+                SetObjectProperty(@ts_attr, "Value", @emailAddress)
+                AddObjectArrayItem(@ts_sub, "Attributes", @ts_attr)
+          ENDIF         
+          IF NOT IsNull(@company) THEN
+                SET @ts_attr = CreateObject("Attribute")
+                SetObjectProperty(@ts_attr, "Name", "Company")
+                SetObjectProperty(@ts_attr, "Value", @company)
+                AddObjectArrayItem(@ts_sub, "Attributes", @ts_attr)
+          ENDIF         
+          
+          AddObjectArrayItem(@ts, "Subscribers", @ts_sub)
+          SET @ts_statusCode = InvokeCreate(@ts, @ts_statusMsg, @errorCode)
+          IF @ts_statusCode != "OK" THEN /* NOTE: Bad email addresses will be rejected! */
+                /* update the page variable to display the error page */
+                set @Page = "error"
+                /*RaiseError(@ts_statusMsg, 0, @ts_statusCode, @errorCode)*/
+          ELSE
+                /* update the page variable to display the confirmation page */      
+                set @Page = "success"
+          ENDIF
+          /*triggered send end*/
+     ELSE
+          set @Page = "error"
+     ENDIF
+     /* -- Create Javascript string for checking results from console -- */
+     set @PostbackData = CONCAT("",
+          "; emailAddress: ", @emailAddress,
+          "; firstName: ", @firstName,
+          "; lastName: ", @lastName,
+          "; company: ", @company,
+    "")
+endif
+]%%

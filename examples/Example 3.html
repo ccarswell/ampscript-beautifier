@@ -1,0 +1,60 @@
+%%[ 
+
+set @contxt = queryparameter("pgcontxt")
+set @LOG = Concat("Starting at ", Now())
+
+if memberid == 999 then 
+    set @Version = "PROD"
+elseif memberid == 000 then 
+    set @Version = "UAT"
+endif
+
+set @AllSubsListId = " 43 " /* Same for all Business Units - Enterprise Wide */
+
+/* if page is being opened from email then subscriberkey will have a value */
+set @sk = _subscriberkey
+set @email = emailaddr
+set @Job_ID = jobid
+set @List_ID = listid
+
+if @sk == "" and @Debug != "" then
+	if @Version == "PROD" then
+        /* if sk is empty and we are in debug mode in the Prod BU, then hard-code subscriber id for testing purposes */
+        set @sk="00390000028vpjeAAA"
+        set @email = "test@test.com"
+        set @Job_ID = "2336090"
+        set @List_ID = "43"
+    else
+        /* if sk is empty and we are in debug mode in the UAT BU, then hard-code subscriber id for testing purposes */
+        set @sk="003p000000Fnl4JAAR"
+        set @email = "test@test.com"
+        set @Job_ID = "2343525"
+        set @List_ID = "43"
+    endif
+endif
+
+set @skLong = @sk
+/* Truncate @sk last 3 chars to make it work for Sales Cloud */
+set @sk = Substring(@sk,1,Subtract(length(@sk),3))
+
+set @LOG = Concat(@LOG, "<br/>Version: ", @Version)
+set @LOG = Concat(@LOG, "<br/>SK: ", @sk)
+set @LOG = Concat(@LOG, "<br/>SK Long: ", @skLong)
+set @LOG = Concat(@LOG, "<br/>Email: ", @email)
+set @LOG = Concat(@LOG, "<br/>JobID: ", @Job_ID)
+set @LOG = Concat(@LOG, "<br/>ListID: ", @List_ID)
+
+if empty(@contxt) then
+    set @LOG = Concat(@LOG, "<br/>***Start Page Load***")
+
+    /* Find the subscriber in SalesCloud by looking in Leads and Contacts */
+    set @LOG = Concat(@LOG, "<br/>ID to lookup - ",@sk)    
+    
+    /* Look in Contacts first */
+    set @contacts = RetrieveSalesforceObjects(
+        "Contact"
+        ,"ID,Email,HasOptedOutOfEmail,FirstName,LastName"               
+        ,"ID", "=", @sk
+    )
+endif
+]%%
