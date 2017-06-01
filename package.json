@@ -1,6 +1,6 @@
 {
-    "name": "ampscript.beautifier",
-    "version": "1.0.11",
+    "name": "ampscript-beautifier",
+    "version": "1.0.12",
     "title": "AMPscript Beautifier",
     "description": "Make AMPscript beautiful again!",
     "engines": {
@@ -10,5 +10,5 @@
     "author": "Christopher Carswell",
     "license": "MIT",
     "categories":"formatting",
-    "keywords": ["ampscript","beautify", "beautifier", "format", "formatting", "tidy", "pretty", "prettify"]
+    "keywords": ["salesforce","marketingcloud","marketing cloud","exacttarget","ampscript","beautify", "beautifier", "format", "formatting", "tidy", "pretty", "prettify"]
 }
