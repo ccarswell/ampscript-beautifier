@@ -70,7 +70,6 @@ define(function (require) {
 			} else {
 				batchUpdate(newformat, editor.hasSelection());
 			}
-
 		}
 	}
 
@@ -82,7 +81,7 @@ define(function (require) {
 			for (var i = 0; i < json.length; i++) {
 				if (json[i]["Text"] === "\"") {
 
-					if (json[i + 1]["Text"] === "\"") { //Note: double quotes right after each other like ""
+					if (json[i + 1]["Text"] === "\"") { //NOTE: double quotes right after each other like ""
 
 						json[i]["String"] = true
 						json[i + 1]["String"] = true
@@ -117,7 +116,6 @@ define(function (require) {
 						}
 					}
 				}
-
 			}
 			return (json)
 		}
@@ -156,7 +154,7 @@ define(function (require) {
 
 					if (nestLevel > 0) {
 
-						if (item === "@@linebreak") {
+						if (json[i]["Text"] === "@@LINEBREAK") {
 
 							//NOTE: Stripping indents recursively
 							if (json[i + 1]["Text"] === "@@INDENT") {
@@ -183,7 +181,7 @@ define(function (require) {
 								}
 							}
 
-							json[i + 1]["Indent"] = nestLevel //NOTE: Next liness are set to current nestLevel
+							json[i + 1]["Indent"] = nestLevel //NOTE: Next lines are set to current nestLevel
 
 						}
 
@@ -230,7 +228,8 @@ define(function (require) {
 			//NOTE: Function formatting
 			function upperCaser(arrayItem) {
 
-				var arrayItemLower = arrayItem.toLowerCase() //NOTE: Converting the arrayitem to lowercase
+				var arrayItemLower = arrayItem.toLowerCase()
+				
 				var controlsArray = ["for", "do", "downto", "to", "if", "else", "elseif", "endif", "then", "next", "and", "or"]
 
 				for (var x = 0; x < controlsArray.length; x++) {
@@ -316,9 +315,7 @@ define(function (require) {
 
 				} else {
 
-					////////////////////////////////////////////////////////
 					//NOTE: Apply formatting to the text if not in comments or is a string
-					////////////////////////////////////////////////////////
 
 					if (json[i]["String"] === false) { //don't apply any formatting if text is within a string
 						json[i]["Text"] = (upperCaser(json[i]["Text"]))
@@ -392,8 +389,7 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: This function spaces out the final output (used instead of .join(' '))
-		//NOTE: The incoming array doesn't contain any spaces, they all need to be added
+		//NOTE: This function spaces out the final output (used instead of .join(' ')).
 
 		function outputSpacer(json) {
 
@@ -472,14 +468,11 @@ define(function (require) {
 			return (outputResultArr)
 		}
 
-		////////////////////////////////////
-		//////////Running Things////////////
-		////////////////////////////////////
-
+		//NOTE: Running Things
 		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))
 
 		if (debug === true) {
-			//DEBUGGING: Use this version to see the array results.  Must select all  characters in the window first before running.
+			//DEBUGGING: Use this version to see the array results.  Must select all characters in the window first before running.
 			var outputResultArr = [];
 			for (var i = 0; i < result.length; i++) {
 				outputResultArr.push(result[i]["Text"])
@@ -491,9 +484,6 @@ define(function (require) {
 			var spacedOut = outputSpacer(result)
 			return (spacedOut.join(''))
 		}
-
-		////////////////////////////////////
-
 	}
 
 	function batchUpdate(formattedText, isSelection) {
