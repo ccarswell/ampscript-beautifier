@@ -6,7 +6,8 @@
   	https://pegjs.org/
 
   Usage
-  	Generate parser.js file from https://pegjs.org/online
+  	Generate parser.js file from https://pegjs.org/online.  
+  		The regex used to create this parser can be found here: https://github.com/ccarswell/ampscript-beautifier/blob/master/regex/regex.js
   	Copy rows from line 9 (peg$subclass(...) until before end of "return" statement in parser.js
   	Update below from function peg$subclass(...) until before "return" statement
   	Save
