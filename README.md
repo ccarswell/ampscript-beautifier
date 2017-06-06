@@ -9,25 +9,25 @@ From this:
 %%[
 /* 4th level nested IF statement */
 
-IF @sk == "" AND @Debug != "" THEN
-IF @Version == "PROD" THEN
-SET @sk="00390000028vpjeAAA"
-IF @Test1 == "Test1" THEN
-SET @Test1 == "PASS"
-IF @Test2 == "Test2" THEN
-SET @Test2 == "PASS"
-ENDIF
-ENDIF
-SET @email = "test@test.com"
-SET @Job_ID = "2336090"
-SET @List_ID = "43"
-ELSEIF @Version == "PROD" THEN
-SET @sk="003p000000Fnl4JAAR"
-SET @email = "test@test.com"
-SET @Job_ID = "2343525"
-SET @List_ID = "43"
-ENDIF
-ENDIF
+if @sk == "" AND @Debug != "" then
+if @Version == "PROD" then
+set @sk="00390000028vpjeAAA"
+if @Test1 == "Test1" then
+set @Test1 == "PASS"
+if @Test2 == "Test2" then
+set @Test2 == "PASS"
+endif
+endif
+set @email = "test@test.com"
+set @Job_ID = "2336090"
+set @List_ID = "43"
+elseif @Version == "PROD" then
+set @sk="003p000000Fnl4JAAR"
+set @email = "test@test.com"
+set @Job_ID = "2343525"
+set @List_ID = "43"
+endif
+endif
 ]%%
 ```
 
