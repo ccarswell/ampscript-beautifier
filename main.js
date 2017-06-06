@@ -398,9 +398,9 @@ define(function (require) {
 
 					//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
-						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function) 
+						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function
 						json[i + 1]["Text"] != "," && //NOTE: Dont add a space if the next item is a comma
-						json[i + 1]["Text"] != "\"" //NOTE: Dont add a space if the next item is a comma
+						json[i + 1]["Text"] != "\"" //NOTE: Dont add a space if the next item is a newline
 					) {
 						json.splice(i + 1, 0, {
 								Id: "AfterStringEnd",
@@ -439,7 +439,6 @@ define(function (require) {
 		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))
 
 		if (debug === true) {
-			//DEBUGGING: Use this version to see the array results.  Must select all characters in the window first before running.
 			var outputResultArr = [];
 			for (var i = 0; i < result.length; i++) {
 				outputResultArr.push(result[i]["Text"])
@@ -476,6 +475,7 @@ define(function (require) {
 		CommandManager.register("AMPscript Beautifier", COMMAND_PARSE_ID, startCommandNormal);
 		editMenu.addMenuItem(COMMAND_PARSE_ID, "Ctrl-Shift-A");
 
+		//DEBUGGING: Use this version to see the array results.  Must select all characters in the window first before running.
 		if (debugMenu === true) {
 			CommandManager.register("AMPscript Beautifier Debug", COMMAND_PARSE_ID_DEBUG, startCommandDebug);
 			editMenu.addMenuItem(COMMAND_PARSE_ID_DEBUG, "Ctrl-Shift-X");
