@@ -252,45 +252,37 @@ define(function (require) {
 			}
 
 			function variableFormatter(arrayItem) {
-				if (arrayItem["Text"].toLowerCase() === "set" && arrayItem["Indent"] === 0) {
+			var arrayItemLower = arrayItem["Text"].toLowerCase()
+				if (arrayItemLower === "set" && arrayItem["Indent"] === 0) {
 					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line before variable is set
-
-					return (arrayItem["LineBreak"])
-
-				} else {
-					//NOTE: do nothing
-					return (arrayItem["LineBreak"])
 				}
+				
+				return (arrayItem["LineBreak"])
 			}
 
 			function scriptBlockFormat(arrayItem, nextItem, previousItem) {
 
 				if (arrayItem["Text"] === "%%[" && nextItem["Text"] != "@@LINEBREAK") { //NOTE: Don't add a new line if one is already coming
 					arrayItem["LineBreak"] = 1 //NOTE: Adds new line after start of script tag
-					return (arrayItem["LineBreak"])
 
 				} else if (arrayItem["Text"] === "]%%" && previousItem["Text"] != "\n") { //NOTE: Don't add a new line if there was just a newline
 					arrayItem["LineBreak"] = -1 //NOTE: Adds new line before end of script tag
-					return (arrayItem)["LineBreak"]
-				} else {
-					//NOTE: Do nothing
-					return (arrayItem["LineBreak"])
 				}
+				
+				return (arrayItem["LineBreak"])
 			}
 
 			function ifStatementFormatter(arrayItem, nextItem, previousItem) {
-				if ((arrayItem["Text"].toLowerCase() === "if" || arrayItem["Text"].toLowerCase() === "elseif" || arrayItem["Text"].toLowerCase() === "else") && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
+			var arrayItemLower = arrayItem["Text"].toLowerCase()
+				if ((arrayItemLower === "if" || arrayItemLower === "elseif" || arrayItemLower === "else") && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
 					arrayItem["LineBreak"] = -1 //NOTE: Add single new line before IF statements
-					return (arrayItem["LineBreak"])
-				} else if (arrayItem["Text"].toLowerCase() === "endif" && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
+				} else if (arrayItemLower === "endif" && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
 //					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add single new line before ENDIF statements
-					return (arrayItem["LineBreak"])
-				} else if ((arrayItem["Text"].toLowerCase() === "endif" || arrayItem["Text"].toLowerCase() === "then") && arrayItem["Text"] != "\n" && nextItem["Text"] != "@@LINEBREAK") {
+				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] != "\n" && nextItem["Text"] != "@@LINEBREAK") {
 //					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line after ENDIF statements
-					return (arrayItem["LineBreak"])
-				} else {
-					return (arrayItem["LineBreak"])
 				}
+				
+				return (arrayItem["LineBreak"])
 			}
 
 			var commentStartIndex
