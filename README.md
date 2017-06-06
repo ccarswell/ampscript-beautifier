@@ -65,7 +65,7 @@ ENDIF
 - Standardized indenting by removing excessive whitespace (fixes bad user formatting)
 - Standardized string formatting
 - Standardized function formatting
-- Formatting can be applied to either all code or selected code
+- Formatting can be applied to whole code or selected code only
 
 # Installation
 
