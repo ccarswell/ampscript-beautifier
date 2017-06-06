@@ -1,68 +1,68 @@
 %%[
 
-/* 1st level nested IF statement */
-IF @sk == "" AND @Debug != "" THEN
-SET @sk="00390000028vpjeAAA"
-ELSEIF @Version == "PROD" THEN
-SET @List_ID = "43"
-ENDIF
+/* 1st level nested if statement */
+if @sk == "" AND @Debug != "" then
+set @sk="00390000028vpjeAAA"
+elseif @Version == "PROD" then
+set @List_ID = "43"
+endif
 
 /* 2nd level nested if statement */
-IF @sk == "" AND @Debug != "" THEN
-IF @Version == "PROD" THEN
+if @sk == "" AND @Debug != "" then
+if @Version == "PROD" then
 /* if page is being opened from email then subscriberkey will have a value */
-SET @sk="00390000028vpjeAAA"
-SET @email = "test@test.com"
-SET @Job_ID = "2336090"
-SET @List_ID = "43"
-ELSEIF @Version == "PROD" THEN
-SET @sk="003p000000Fnl4JAAR"
-SET @email = "test@test.com"
-SET @Job_ID = "2343525"
-SET @List_ID = "43"
-ENDIF
-ENDIF
+set @sk="00390000028vpjeAAA"
+set @email = "test@test.com"
+set @Job_ID = "2336090"
+set @List_ID = "43"
+elseif @Version == "PROD" then
+set @sk="003p000000Fnl4JAAR"
+set @email = "test@test.com"
+set @Job_ID = "2343525"
+set @List_ID = "43"
+endif
+endif
 
-/* 3rd level nested IF statement */
+/* 3rd level nested if statement */
 
-IF @sk == "" AND @Debug != "" THEN
-IF @Version == "PROD" THEN
-SET @sk="00390000028vpjeAAA"
-IF @Test1 == "PROD" THEN
-SET @Test1 == "PASS"
-ENDIF
-SET @email = "test@test.com"
-SET @Job_ID = "2336090"
-SET @List_ID = "43"
-ELSEIF @Version == "PROD" THEN
-SET @sk="003p000000Fnl4JAAR"
-SET @email = "test@test.com"
-SET @Job_ID = "2343525"
-SET @List_ID = "43"
-ENDIF
-ENDIF
+if @sk == "" AND @Debug != "" then
+if @Version == "PROD" then
+set @sk="00390000028vpjeAAA"
+if @Test1 == "PROD" then
+set @Test1 == "PASS"
+endif
+set @email = "test@test.com"
+set @Job_ID = "2336090"
+set @List_ID = "43"
+elseif @Version == "PROD" then
+set @sk="003p000000Fnl4JAAR"
+set @email = "test@test.com"
+set @Job_ID = "2343525"
+set @List_ID = "43"
+endif
+endif
 
-/* 4th level nested IF statement */
+/* 4th level nested if statement */
 
-IF @sk == "" AND @Debug != "" THEN
-IF @Version == "PROD" THEN
-SET @sk="00390000028vpjeAAA"
-IF @Test1 == "Test1" THEN
-SET @Test1 == "PASS"
-IF @Test2 == "Test2" THEN
-SET @Test2 == "PASS"
-ENDIF
-ENDIF
-SET @email = "test@test.com"
-SET @Job_ID = "2336090"
-SET @List_ID = "43"
-ELSEIF @Version == "PROD" THEN
-SET @sk="003p000000Fnl4JAAR"
-SET @email = "test@test.com"
-SET @Job_ID = "2343525"
-SET @List_ID = "43"
-ENDIF
-ENDIF
+if @sk == "" AND @Debug != "" then
+if @Version == "PROD" then
+set @sk="00390000028vpjeAAA"
+if @Test1 == "Test1" then
+set @Test1 == "PASS"
+if @Test2 == "Test2" then
+set @Test2 == "PASS"
+endif
+endif
+set @email = "test@test.com"
+set @Job_ID = "2336090"
+set @List_ID = "43"
+elseif @Version == "PROD" then
+set @sk="003p000000Fnl4JAAR"
+set @email = "test@test.com"
+set @Job_ID = "2343525"
+set @List_ID = "43"
+endif
+endif
 
 ]%%
 

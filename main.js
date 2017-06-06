@@ -46,14 +46,16 @@ define(function (require) {
 		}
 
 		var editor = EditorManager.getCurrentFullEditor();
+		var unformattedText
+		var toParse
 		
 		if (editor.hasSelection()) {
-			var unformattedText = editor.getSelectedText();
+			unformattedText = editor.getSelectedText();
 			var range = editor.getSelection();
-			var toParse = unformattedText
+			toParse = unformattedText
 		} else {
-			var unformattedText = DocumentManager.getCurrentDocument();
-			var toParse = unformattedText.getText();
+			unformattedText = DocumentManager.getCurrentDocument();
+			toParse = unformattedText.getText();
 		}
 
 		var parsed = pegParserJS.parse(toParse); //NOTE: Running the module .parse method and passing through the unformatted text
@@ -75,7 +77,7 @@ define(function (require) {
 
 	function reformatter(json, debug) {
 
-		//NOTE: This function determines whether we are parsing a string and assigned it a property of ["String"] = true if so
+		//NOTE: Determines whether we are parsing a string and assigned it a property of ["String"] = true if so
 		function stringProperty(json) {
 
 			for (var i = 0; i < json.length; i++) {
@@ -120,7 +122,7 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: This changes the indent property of each json object but doesn't apply the formatting yet
+		//NOTE: Changes the indent property of each json object but doesn't apply the formatting yet
 		function dabber(json) {
 
 			var nestLevel = 0;
@@ -206,7 +208,7 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: This function ignores comments and runs the rest of the formatting
+		//NOTE: Ignores comments and runs the rest of the formatting
 		function ignoreComments(json) {
 
 			function lineBreaker(arrayItem) {
@@ -281,13 +283,12 @@ define(function (require) {
 					arrayItem["LineBreak"] = -1 //NOTE: Add single new line before IF statements
 					return (arrayItem["LineBreak"])
 				} else if (arrayItem["Text"].toLowerCase() === "endif" && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
-					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add single new line before ENDIF statements
+//					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add single new line before ENDIF statements
 					return (arrayItem["LineBreak"])
 				} else if ((arrayItem["Text"].toLowerCase() === "endif" || arrayItem["Text"].toLowerCase() === "then") && arrayItem["Text"] != "\n" && nextItem["Text"] != "@@LINEBREAK") {
-					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line after ENDIF statements
+//					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line after ENDIF statements
 					return (arrayItem["LineBreak"])
 				} else {
-					//NOTE: Do nothing
 					return (arrayItem["LineBreak"])
 				}
 			}
@@ -302,22 +303,21 @@ define(function (require) {
 					json[i]["LineBreak"] = 0 //NOTE: Newline before comments starts
 					commentEndIndex = 0 //NOTE: Once the start has been found, restart the commentEndIndex
 
-					//NOTE: Process end comment tags
+				//NOTE: Process end comment tags
 				} else if (json[i]["Text"] === "*/") {
 					json[i]["LineBreak"] = 0 //NOTE: Newline after comments ends
 					commentEndIndex = i
 					commentStartIndex = 0 //NOTE: Once the end has been found, restart the commentStartIndex
 
-					//NOTE: Continue setting each item as a comment as long as the commentEndIndex isn't found yet
+				//NOTE: Continue setting each item as a comment as long as the commentEndIndex isn't found yet
 				} else if (commentStartIndex < i && commentEndIndex === 0) {
 
 					//NOTE: Don't format the comment text
 
 				} else {
 
-					//NOTE: Apply formatting to the text if not in comments or is a string
-
-					if (json[i]["String"] === false) { //don't apply any formatting if text is within a string
+					//NOTE: Apply formatting to the text if not in comments or isn't a string
+					if (json[i]["String"] === false) { 
 						json[i]["Text"] = (upperCaser(json[i]["Text"]))
 						json[i]["Text"] = (lineBreaker(json[i]["Text"]))
 						json[i]["Text"] = (indenter(json[i]["Text"]))
@@ -330,67 +330,63 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: This function adjusts the final formatting
+		//NOTE: Final formatting adjustments
 		function outputFormatting(json) {
 
 			for (i = 0; i < json.length; i++) {
-
+				
 				//NOTE: Indenting
-				if (json[i]["Indent"] > 0 && json[i]["Indent"] !== 999) {
-					//NOTE: Apply indent before this item
+				//NOTE: Apply 1 indent before this item
+				if (json[i]["Indent"] > 0) {
+					
 					var spliceObj = {}
-					spliceObj["Id"] = json[i]["Id"] + "_tab"
+					spliceObj["Id"] = "Indent"
 					spliceObj["Text"] = "\t".repeat(json[i]["Indent"])
-					spliceObj["Indent"] = "NA"
-					spliceObj["LineBreak"] = "NA"
-					json[i]["Indent"] = 999 //NOTE: changes the value as not to be processed again
+					
 					json.splice(i, 0, spliceObj)
+					
+					i++ //NOTE: Skips to next item to avoid reprocessing current item
 				}
 
 				//NOTE: Line Breaking
-				var text = json[i]["Text"]
-
-				//NOTE: Apply line break after this item
+				//NOTE: Apply 1 line break after this item
 				if (json[i]["LineBreak"] === 1) {
-					json[i]["LineBreak"] = 999 //NOTE: Changes the value as not to be processed again
 
 					var spliceObj = {}
-					spliceObj["Id"] = json[i]["Id"] + "_lb"
+					spliceObj["Id"] = "Linebreak"
 					spliceObj["Text"] = "\n"
-					spliceObj["Indent"] = "NA"
-					spliceObj["LineBreak"] = "NA"
 
-					json.splice(i + 1, 0, spliceObj) // +1 to add the line break after the current item
+					json.splice(i + 1, 0, spliceObj) //NOTE: +1 to add the line break after the current item
+					
+					i++ 
 
-					//NOTE: Apply line break before this item
+				//NOTE: Apply 1 line break before this item
 				} else if (json[i]["LineBreak"] === -1) {
-					json[i]["LineBreak"] = 999 //NOTE: Changes the value as not to be processed again
 
 					var spliceObj = {}
-					spliceObj["Id"] = json[i]["Id"] + "_lb"
+					spliceObj["Id"] = "Linebreak"
 					spliceObj["Text"] = "\n"
-					spliceObj["Indent"] = "NA"
-					spliceObj["LineBreak"] = "NA"
 
 					json.splice(i, 0, spliceObj)
+					
+					i++ 
 
-					//NOTE: Apply 2 line breaks before this item
+				//NOTE: Apply 2 line breaks before this item
 				} else if (json[i]["LineBreak"] === -2) {
-					json[i]["LineBreak"] = 999 //NOTE: Changes the value as not to be processed again
+
 					var spliceObj = {}
-					spliceObj["Id"] = json[i]["Id"] + "_lb"
+					spliceObj["Id"] = "Double Linebreak"
 					spliceObj["Text"] = "\n\n"
-					spliceObj["Indent"] = "NA"
-					spliceObj["LineBreak"] = "NA"
 
 					json.splice(i, 0, spliceObj)
+					
+					i++ 
 				}
 			}
 			return (json)
 		}
 
-		//NOTE: This function spaces out the final output (used instead of .join(' ')).
-
+		//NOTE: Spaces out the final output (used instead of .join(' ')).
 		function outputSpacer(json) {
 
 			for (var i = 0; i < json.length; i++) {
@@ -405,7 +401,7 @@ define(function (require) {
 						json[i]["Text"] != "%%[" &&
 						json[i]["Text"] != "]%%" &&
 						json[i]["Text"].includes("\n") === false &&
-						json[i + 1]["Text"] != "\n" && //Errors here
+						json[i + 1]["Text"] != "\n" &&
 						json[i + 1]["Text"] != "(" &&
 						json[i]["Text"] != "(" &&
 						json[i + 1]["Text"] != ")"
@@ -428,7 +424,7 @@ define(function (require) {
 						//							String: true
 						//						})
 
-						//NOTE: After string parsing
+					//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
 						json[i + 1]["Text"] != ")" && //NOTE: Dont add a space after if its the end of a function) 
 						json[i + 1]["Text"] != "," && //NOTE: Dont add a space if the next item is a comma
@@ -440,7 +436,7 @@ define(function (require) {
 								Text: " ",
 								String: true
 							})
-							//NOTE: Parsing string contents
+					//NOTE: Parsing string contents
 					} else if (
 						json[i]["Id"] != "StringWhiteSpace" && //NOTE: Needed to stop an infinite loop
 						json[i + 1]["StringEnd"] != true && //NOTE: If next item is the end of the string, dont add a space
