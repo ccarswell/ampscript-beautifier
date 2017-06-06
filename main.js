@@ -1,18 +1,18 @@
 define(function (require) {
 	'use strict';
-	var PREFIX = 'carswell.ampscriptify';
-	var COMMAND_ID = PREFIX + '.ampscriptify';
-	var COMMAND_PARSE_ID = PREFIX + '.parse';
-	var COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug';
-	var debugMenu = false;
+	var PREFIX = 'carswell.ampscriptify',
+		COMMAND_ID = PREFIX + '.ampscriptify',
+		COMMAND_PARSE_ID = PREFIX + '.parse',
+		COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug',
+		debugMenu = false;
 
 	/* beautify preserve:start */
-	var AppInit            = brackets.getModule('utils/AppInit');
-    var CommandManager     = brackets.getModule('command/CommandManager');
-    var Editor             = brackets.getModule('editor/Editor').Editor;
-    var EditorManager      = brackets.getModule('editor/EditorManager');
-    var Menus              = brackets.getModule('command/Menus');
-    var DocumentManager    = brackets.getModule('document/DocumentManager');
+	var AppInit            = brackets.getModule('utils/AppInit'),
+    	CommandManager     = brackets.getModule('command/CommandManager'),
+    	Editor             = brackets.getModule('editor/Editor').Editor,
+    	EditorManager      = brackets.getModule('editor/EditorManager'),
+    	Menus              = brackets.getModule('command/Menus'),
+    	DocumentManager    = brackets.getModule('document/DocumentManager');
 	/* beautify preserve:end */
 	
 	//NOTE: Loading the PegJS Parser as a module
@@ -45,9 +45,9 @@ define(function (require) {
 			return (JSONObj)
 		}
 
-		var editor = EditorManager.getCurrentFullEditor();
-		var unformattedText
-		var toParse
+		var editor = EditorManager.getCurrentFullEditor(),
+			unformattedText,
+			toParse;
 		
 		if (editor.hasSelection()) {
 			unformattedText = editor.getSelectedText();
@@ -58,10 +58,10 @@ define(function (require) {
 			toParse = unformattedText.getText();
 		}
 
-		var parsed = pegParserJS.parse(toParse); //NOTE: Running the module .parse method and passing through the unformatted text
-		var formattedText = parsed.parse; //NOTE: Parsed into array items
-		var json = convertArrToJSON(formattedText)
-		var newformat = reformatter(json, debug)
+		var parsed = pegParserJS.parse(toParse), //NOTE: Running the module .parse method and passing through the unformatted text
+			formattedText = parsed.parse, //NOTE: Parsed into array items
+			json = convertArrToJSON(formattedText),
+			newformat = reformatter(json, debug);
 
 		//NOTE: Updating the window with the formatted text
 		var editor = EditorManager.getCurrentFullEditor();
@@ -125,9 +125,9 @@ define(function (require) {
 		//NOTE: Changes the indent property of each json object but doesn't apply the formatting yet
 		function dabber(json) {
 
-			var nestLevel = 0;
-			var commentStartIndex;
-			var commentEndIndex;
+			var nestLevel = 0,
+				commentStartIndex,
+				commentEndIndex;
 
 			for (var i = 0; i < json.length; i++) {
 
@@ -212,19 +212,11 @@ define(function (require) {
 		function ignoreComments(json) {
 
 			function lineBreaker(arrayItem) {
-
-				if (arrayItem === "@@LINEBREAK") {
-					arrayItem = "\n"
-				}
-				return (arrayItem)
+				return (arrayItem === "@@LINEBREAK" ? "\n" : arrayItem)
 			}
 
 			function indenter(arrayItem) {
-
-				if (arrayItem === "@@INDENT") {
-					arrayItem = "\t"
-				}
-				return (arrayItem)
+				return (arrayItem === "@@INDENT" ? "\t" : arrayItem)
 			}
 
 			//NOTE: Function formatting
@@ -254,7 +246,7 @@ define(function (require) {
 			function variableFormatter(arrayItem) {
 			var arrayItemLower = arrayItem["Text"].toLowerCase()
 				if (arrayItemLower === "set" && arrayItem["Indent"] === 0) {
-					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line before variable is set
+					//arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line before variable is set
 				}
 				
 				return (arrayItem["LineBreak"])
@@ -285,8 +277,8 @@ define(function (require) {
 				return (arrayItem["LineBreak"])
 			}
 
-			var commentStartIndex
-			var commentEndIndex
+			var commentStartIndex,
+				commentEndIndex;
 
 			for (var i = 0; i < json.length; i++) {
 				//NOTE: Process start comment tags
@@ -310,9 +302,9 @@ define(function (require) {
 
 					//NOTE: Apply formatting to the text if not in comments or isn't a string
 					if (json[i]["String"] === false) { 
-						json[i]["Text"] = (upperCaser(json[i]["Text"]))
-						json[i]["Text"] = (lineBreaker(json[i]["Text"]))
-						json[i]["Text"] = (indenter(json[i]["Text"]))
+						json[i]["Text"] = upperCaser(json[i]["Text"])
+						json[i]["Text"] = lineBreaker(json[i]["Text"])
+						json[i]["Text"] = indenter(json[i]["Text"])
 						json[i]["LineBreak"] = variableFormatter(json[i])
 						json[i]["LineBreak"] = scriptBlockFormat(json[i], json[i + 1], json[i - 1])
 						json[i]["LineBreak"] = ifStatementFormatter(json[i], json[i + 1], json[i - 1])
@@ -383,8 +375,8 @@ define(function (require) {
 
 			for (var i = 0; i < json.length; i++) {
 
-				var debugVal = json[i]["Text"];
-				var debugString = json[i]["String"];
+				var debugVal = json[i]["Text"],
+					debugString = json[i]["String"];
 
 				//NOTE: No spaces after these
 				if (json[i]["String"] === false && json[i + 1]) {
@@ -408,13 +400,8 @@ define(function (require) {
 				if (json[i]["String"] === true) {
 
 					if (json[i]["StringStart"] === true && json[i - 1]["Id"] != "BeforeStringStart") {
-
-						//FUTURE: Additional formatting for before strings if required
-						//						json.splice(i, 0, {
-						//							Id: "BeforeStringStart",
-						//							Text: " ",
-						//							String: true
-						//						})
+					
+						//FUTURE: Additional formatting before strings if required
 
 					//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
@@ -452,7 +439,6 @@ define(function (require) {
 			for (var i = 0; i < json.length; i++) {
 				outputResultArr.push(json[i]["Text"])
 			}
-
 			return (outputResultArr)
 		}
 
@@ -475,11 +461,11 @@ define(function (require) {
 	}
 
 	function batchUpdate(formattedText, isSelection) {
-		var editor = EditorManager.getCurrentFullEditor();
-		var cursorPos = editor.getCursorPos();
-		var scrollPos = editor.getScrollPos();
-		var doc = DocumentManager.getCurrentDocument();
-		var selection = editor.getSelection();
+		var editor = EditorManager.getCurrentFullEditor(),
+			cursorPos = editor.getCursorPos(),
+			scrollPos = editor.getScrollPos(),
+			doc = DocumentManager.getCurrentDocument(),
+			selection = editor.getSelection();
 		doc.batchOperation(function () {
 			if (isSelection) {
 				doc.replaceRange(formattedText, selection.start, selection.end);
