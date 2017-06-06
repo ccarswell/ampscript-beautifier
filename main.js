@@ -210,14 +210,6 @@ define(function (require) {
 		//NOTE: Ignores comments and runs the rest of the formatting
 		function ignoreComments(json) {
 
-			function lineBreaker(arrayItem) {
-				return (arrayItem === "@@LINEBREAK" ? "\n" : arrayItem)
-			}
-
-			function indenter(arrayItem) {
-				return (arrayItem === "@@INDENT" ? "\t" : arrayItem)
-			}
-
 			//NOTE: Function formatting
 			function upperCaser(arrayItem) {
 
@@ -300,8 +292,8 @@ define(function (require) {
 					//NOTE: Apply formatting to the text if not in comments or isn't a string
 					if (json[i]["String"] === false) { 
 						json[i]["Text"] = upperCaser(json[i]["Text"])
-						json[i]["Text"] = lineBreaker(json[i]["Text"])
-						json[i]["Text"] = indenter(json[i]["Text"])
+						json[i]["Text"] = (json[i]["Text"] === "@@LINEBREAK" ? "\n" : json[i]["Text"])
+						json[i]["Text"] = (json[i]["Text"] === "@@INDENT" ? "\t" : json[i]["Text"])
 						json[i]["LineBreak"] = variableFormatter(json[i])
 						json[i]["LineBreak"] = scriptBlockFormat(json[i], json[i + 1], json[i - 1])
 						json[i]["LineBreak"] = ifStatementFormatter(json[i], json[i + 1], json[i - 1])
