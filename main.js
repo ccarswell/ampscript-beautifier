@@ -77,13 +77,14 @@ define(function (require) {
 
 	function reformatter(json, debug) {
 
-		//NOTE: Determines whether we are parsing a string and assigned it a property of ["String"] = true if so
+		//NOTE: Determines whether we are parsing a string and assigned it a property of ["String"] = true
 		function stringProperty(json) {
 
 			for (var i = 0; i < json.length; i++) {
 				if (json[i]["Text"] === "\"") {
-
-					if (json[i + 1]["Text"] === "\"") { //NOTE: double quotes right after each other like ""
+					
+					//NOTE: Double quotes right after each other like ""
+					if (json[i + 1]["Text"] === "\"") { 
 
 						json[i]["String"] = true
 						json[i + 1]["String"] = true
@@ -100,12 +101,13 @@ define(function (require) {
 						function findEnd(arrayItem) {
 							return (arrayItem["Text"] === "\"")
 						}
+						
 						//NOTE: Finding the index of where the string stops
 						var endIndex = arraySlice.findIndex(findEnd)
 
-						var startString = i;
-						var endString = i + 1 + endIndex;
-						var deltaString = endString - startString + 1
+						var startString = i,
+							endString = i + 1 + endIndex,
+							deltaString = endString - startString + 1;
 
 						//NOTE: Assigning properties for parsing later
 						json[i]["StringStart"] = true
@@ -114,7 +116,7 @@ define(function (require) {
 						while (deltaString !== 0) {
 
 							json[i - 1 + deltaString]["String"] = true //from " until " 
-							deltaString--;
+							deltaString--
 						}
 					}
 				}
@@ -179,26 +181,23 @@ define(function (require) {
 								while (deltaIndent >= 1) {
 
 									json.splice(i + deltaIndent, 1)
-									deltaIndent--;
+									deltaIndent--
 								}
 							}
-
 							json[i + 1]["Indent"] = nestLevel //NOTE: Next lines are set to current nestLevel
-
 						}
 
 						//NOTE: End of function
 						if (json[i]["Text"] === ")" && inFunction === true) {
 							json[i]["Indent"] = nestLevel - 1 //NOTE: Closing ")" has same indent as original opening "("
-							nestLevel--; //NOTE: Permanently go down a level
+							nestLevel-- //NOTE: Permanently go down a level
 							inFunction = false
-
 						}
 
 						if (item === "else" || item === "elseif" || item === "endif") {
 							json[i]["Indent"] = nestLevel - 1 //NOTE: Temporarily go back one
 							if (item === "endif" || item === "elseif") {
-								nestLevel--; //NOTE: Permanently go back one
+								nestLevel-- //NOTE: Permanently go back one
 							}
 						}
 					}
@@ -246,7 +245,7 @@ define(function (require) {
 			function variableFormatter(arrayItem) {
 			var arrayItemLower = arrayItem["Text"].toLowerCase()
 				if (arrayItemLower === "set" && arrayItem["Indent"] === 0) {
-					//arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line before variable is set
+					//FUTURE: Potentially add new line before variable is set -- arrayItem["LineBreak"] = 0 
 				}
 				
 				return (arrayItem["LineBreak"])
@@ -269,9 +268,9 @@ define(function (require) {
 				if ((arrayItemLower === "if" || arrayItemLower === "elseif" || arrayItemLower === "else") && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
 					arrayItem["LineBreak"] = -1 //NOTE: Add single new line before IF statements
 				} else if (arrayItemLower === "endif" && arrayItem["Text"] != "\n" && previousItem["Text"] != "\n" && previousItem["Text"] != "\t") {
-//					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add single new line before ENDIF statements
+					//FUTURE: Potentially add single new line before ENDIF statements -- arrayItem["LineBreak"] = 0
 				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] != "\n" && nextItem["Text"] != "@@LINEBREAK") {
-//					arrayItem["LineBreak"] = 0 //FUTURE: Potentially add new line after ENDIF statements
+//					//FUTURE: Potentially add new line after ENDIF statements -- arrayItem["LineBreak"] = 0
 				}
 				
 				return (arrayItem["LineBreak"])
@@ -284,12 +283,10 @@ define(function (require) {
 				//NOTE: Process start comment tags
 				if (json[i]["Text"] === "/*") {
 					commentStartIndex = i
-					json[i]["LineBreak"] = 0 //NOTE: Newline before comments starts
 					commentEndIndex = 0 //NOTE: Once the start has been found, restart the commentEndIndex
 
 				//NOTE: Process end comment tags
 				} else if (json[i]["Text"] === "*/") {
-					json[i]["LineBreak"] = 0 //NOTE: Newline after comments ends
 					commentEndIndex = i
 					commentStartIndex = 0 //NOTE: Once the end has been found, restart the commentStartIndex
 
@@ -319,27 +316,25 @@ define(function (require) {
 
 			for (i = 0; i < json.length; i++) {
 				
-				//NOTE: Indenting
+				//NOTE: Format indentations
 				//NOTE: Apply 1 indent before this item
 				if (json[i]["Indent"] > 0) {
 					
 					var spliceObj = {}
 					spliceObj["Id"] = "Indent"
 					spliceObj["Text"] = "\t".repeat(json[i]["Indent"])
-					
 					json.splice(i, 0, spliceObj)
 					
 					i++ //NOTE: Skips to next item to avoid reprocessing current item
 				}
 
-				//NOTE: Line Breaking
+				//NOTE: Format line breaking
 				//NOTE: Apply 1 line break after this item
 				if (json[i]["LineBreak"] === 1) {
 
 					var spliceObj = {}
 					spliceObj["Id"] = "Linebreak"
 					spliceObj["Text"] = "\n"
-
 					json.splice(i + 1, 0, spliceObj) //NOTE: +1 to add the line break after the current item
 					
 					i++ 
@@ -350,7 +345,6 @@ define(function (require) {
 					var spliceObj = {}
 					spliceObj["Id"] = "Linebreak"
 					spliceObj["Text"] = "\n"
-
 					json.splice(i, 0, spliceObj)
 					
 					i++ 
@@ -361,7 +355,6 @@ define(function (require) {
 					var spliceObj = {}
 					spliceObj["Id"] = "Double Linebreak"
 					spliceObj["Text"] = "\n\n"
-
 					json.splice(i, 0, spliceObj)
 					
 					i++ 
@@ -409,12 +402,12 @@ define(function (require) {
 						json[i + 1]["Text"] != "," && //NOTE: Dont add a space if the next item is a comma
 						json[i + 1]["Text"] != "\"" //NOTE: Dont add a space if the next item is a comma
 					) {
-
 						json.splice(i + 1, 0, {
 								Id: "AfterStringEnd",
 								Text: " ",
 								String: true
 							})
+							
 					//NOTE: Parsing string contents
 					} else if (
 						json[i]["Id"] != "StringWhiteSpace" && //NOTE: Needed to stop an infinite loop
@@ -442,7 +435,7 @@ define(function (require) {
 			return (outputResultArr)
 		}
 
-		//NOTE: Running Things
+		//NOTE: Running things
 		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))
 
 		if (debug === true) {
