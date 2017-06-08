@@ -243,25 +243,28 @@ define(function (require) {
 
 			function scriptBlockFormat(arrayItem, nextItem, previousItem) {
 
-				if (arrayItem["Text"] === "%%[" && nextItem["Text"] !== "@@LINEBREAK") { //NOTE: Don't add a new line if one is already coming
-					arrayItem["LineBreak"] = 1 //NOTE: Adds new line after start of script tag
+				if (nextItem) {
+					if (arrayItem["Text"] === "%%[" && nextItem["Text"] !== "@@LINEBREAK") { //NOTE: Don't add a new line if one is already coming
+						arrayItem["LineBreak"] = 1 //NOTE: Adds new line after start of script tag
 
-				} else if (arrayItem["Text"] === "]%%" && previousItem["Text"] !== "\n") { //NOTE: Don't add a new line if there was just a newline
-					arrayItem["LineBreak"] = -1 //NOTE: Adds new line before end of script tag
+					} else if (arrayItem["Text"] === "]%%" && previousItem["Text"] !== "\n") { //NOTE: Don't add a new line if there was just a newline
+						arrayItem["LineBreak"] = -1 //NOTE: Adds new line before end of script tag
+					}
+
+					return (arrayItem["LineBreak"])
 				}
-
-				return (arrayItem["LineBreak"])
 			}
 
 			function ifStatementFormatter(arrayItem, nextItem, previousItem) {
+			
 				var arrayItemLower = arrayItem["Text"].toLowerCase()
 				if ((arrayItemLower === "if" || arrayItemLower === "elseif" || arrayItemLower === "else") && arrayItem["Text"] !== "\n" && previousItem["Text"] !== "\n" && previousItem["Text"] !== "\t") {
 					arrayItem["LineBreak"] = -1 //NOTE: Add single new line before IF statements
-				} else if (arrayItemLower === "endif" && arrayItem["Text"] !== "\n" && previousItem["Text"] !== "\n" && previousItem["Text"] !== "\t") {
-					//FUTURE: Potentially add single new line before ENDIF statements -- arrayItem["LineBreak"] = 0
-				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] !== "\n" && nextItem["Text"] !== "@@LINEBREAK") {
-					//					//FUTURE: Potentially add new line after ENDIF statements -- arrayItem["LineBreak"] = 0
-				}
+				} // else if (arrayItemLower === "endif" && arrayItem["Text"] !== "\n" && previousItem["Text"] !== "\n" && previousItem["Text"] !== "\t") {
+//					//FUTURE: Potentially add single new line before ENDIF statements -- arrayItem["LineBreak"] = 0
+//				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] !== "\n" && nextItem["Text"] !== "@@LINEBREAK") {
+//					//					//FUTURE: Potentially add new line after ENDIF statements -- arrayItem["LineBreak"] = 0
+//				}
 
 				return (arrayItem["LineBreak"])
 			}
@@ -380,7 +383,7 @@ define(function (require) {
 				},
 				doubleQuote: function (item) {
 					return (item === "\"" ? true : false)
-				}					
+				}
 			};
 
 			for (var i = 0; i < json.length; i++) {
@@ -432,7 +435,7 @@ define(function (require) {
 						json[i + 1]["StringEnd"] !== true && //NOTE: If next item is the end of the string, dont add a space
 						json[i - 1]["Id"] !== "BeforeStringStart" && //NOTE: Dont add an initial space after the quote
 						json[i]["Id"] !== "AfterStringEnd" && //NOTE: Dont add a space after the end of the string
-						ruleSet.closeBracket(nextText) === false &&//NOTE: Dont add a space after if its the end of a function
+						ruleSet.closeBracket(nextText) === false && //NOTE: Dont add a space after if its the end of a function
 						ruleSet.comma(nextText) === false //NOTE: Dont add a space if the next item is a comma	
 					) {
 						//NOTE: Add a space after
