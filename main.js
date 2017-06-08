@@ -109,8 +109,8 @@ define(function (require) {
 							deltaString = endString - startString + 1;
 
 						//NOTE: Assigning properties for formatting later
-						json[i]["StringStart"] = true
-						json[endString]["StringEnd"] = true
+						json[i]["StringStart"] = true;
+						json[endString]["StringEnd"] = true;
 
 						while (deltaString !== 0) {
 
@@ -354,7 +354,7 @@ define(function (require) {
 			return (json)
 		}
 
-		//NOTE: Spaces out the final output (used instead of .join(' ')).
+		//NOTE: Spaces out the final output (used instead of .join(' ')).    
 		function outputSpacer(json) {
 
 			function ruleSet() {};
@@ -412,7 +412,10 @@ define(function (require) {
 				}
 
 				if (json[i]["String"] === true) {
-
+                    
+					var thisText = json[i]["Text"],
+						nextText = json[i + 1]["Text"];
+                    
 					if (json[i]["StringStart"] === true && json[i - 1]["Id"] !== "BeforeStringStart") {
 
 						//FUTURE: Additional formatting before strings if required
@@ -436,7 +439,7 @@ define(function (require) {
 						json[i - 1]["Id"] !== "BeforeStringStart" && //NOTE: Dont add an initial space after the quote
 						json[i]["Id"] !== "AfterStringEnd" && //NOTE: Dont add a space after the end of the string
 						ruleSet.closeBracket(nextText) === false && //NOTE: Dont add a space after if its the end of a function
-						ruleSet.comma(nextText) === false //NOTE: Dont add a space if the next item is a comma	
+						ruleSet.comma(nextText) === false //NOTE: Dont add a space if the next item is a comma						
 					) {
 						//NOTE: Add a space after
 						json.splice(i + 1, 0, {
@@ -454,7 +457,7 @@ define(function (require) {
 				outputResultArr.push(json[i]["Text"])
 			}
 			return (outputResultArr)
-		}
+		}        
 
 		//NOTE: Running things
 		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))
