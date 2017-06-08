@@ -40,12 +40,14 @@ Text
   Function / 
   Quotes / 
   Code / 
+  EmDash /
+  EnDash /
   AMPscriptEnd /
   SquareBrackets
   
 
 AMPscriptStart
-  = startscript: '%%[' ws*  {return '%%['}
+  = startscript: ws* '%%[' ws*  {return '%%['}
   
 AMPscriptEnd
   = endscript: ws* ']%%'  {return ']%%'}
@@ -66,7 +68,13 @@ InlineAMPscriptEnd
 	= text: '=%%' ws* {return text}
     
 Code
-  = text: [-A-Za-z0-9_@=,/*!.<>:?;']+ ws* {return text.join("")}
+  = text: [-A-Za-z0-9_@=$%,#/*!.<>:?;']+ ws* {return text.join("")}
+  
+EmDash
+  = text: ws* '–' ws* {return '–'}
+  
+EnDash
+  = text: ws* '-' ws* {return '-'}
   
 Quotes
   = text: ws* '"' ws* {return '"'}
