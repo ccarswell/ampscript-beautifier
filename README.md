@@ -101,6 +101,7 @@ You can also get the latest work-in-progress version by downloading or installin
 
 ## Bugs
 - Doesn't play well with other HTML just yet.  If errors are occuring (or nothing happens), please select AMPscript block code only.
+- Double check all CONCAT strings after running as whitespace is automatically trimmed within double quotes
 
 ## Resources
 - Parser generated using https://pegjs.org/
