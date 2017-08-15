@@ -420,6 +420,7 @@ define(function (require) {
 
 					var thisText = json[i]["Text"],
 						nextText = json[i + 1]["Text"];
+						
 					//NOTE: Accomodating for IF (@a == 3) AND (@b == 3) THEN
 					if (ruleSet.operators(thisText) === true && ruleSet.openBracket(nextText) === true) { //NOTE: Add a space after an operator
 						json.splice(i + 1, 0, {
@@ -427,7 +428,7 @@ define(function (require) {
 							String: false
 						})
 					}
-
+					
 					//NOTE: Don't add a space afterwards if any of these are true
 					if (ruleSet.whiteSpace(thisText) === true || //NOTE: Not a recently spliced space
 						ruleSet.scriptStart(thisText) === true || //NOTE: Dont add a space after the start of the AMPscript block
@@ -461,7 +462,7 @@ define(function (require) {
 
 					if (json[i]["StringStart"] === true && json[i - 1]["Id"] !== "BeforeStringStart") {
 
-						//FUTURE: Additional formatting before strings if required
+						//FUTURE: Additional formatting before strings start if required
 
 						//NOTE: After string parsing
 					} else if (json[i]["StringEnd"] === true &&
