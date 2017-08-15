@@ -4,7 +4,7 @@ define(function (require) {
 		COMMAND_ID = PREFIX + '.ampscriptify',
 		COMMAND_PARSE_ID = PREFIX + '.parse',
 		COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug',
-		debugMenu = true;
+		debugMenu = false;
 
 	/* beautify preserve:start */
 	var AppInit            = brackets.getModule('utils/AppInit'),
