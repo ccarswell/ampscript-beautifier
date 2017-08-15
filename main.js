@@ -4,7 +4,7 @@ define(function (require) {
 		COMMAND_ID = PREFIX + '.ampscriptify',
 		COMMAND_PARSE_ID = PREFIX + '.parse',
 		COMMAND_PARSE_ID_DEBUG = PREFIX + '.parsedebug',
-		debugMenu = false;
+		debugMenu = true;
 
 	/* beautify preserve:start */
 	var AppInit            = brackets.getModule('utils/AppInit'),
@@ -133,10 +133,10 @@ define(function (require) {
 			for (var i = 0; i < json.length; i++) {
 
 				//NOTE: Ignoring comments
-				if (json[i]["Text"] === "/*") {
+				if (json[i]["Text"] === "/*" || json[i]["Text"] === "%%=") {
 					commentStartIndex = i
 					commentEndIndex = 0 //NOTE: Once the start has been found, restart the commentEndIndex
-				} else if (json[i]["Text"] === "*/") {
+				} else if (json[i]["Text"] === "*/" || json[i]["Text"] === "=%%") {
 					commentEndIndex = i
 					commentStartIndex = 0 //NOTE: Once the end has been found, restart the commentStartIndex
 				} else if (commentStartIndex < i && commentEndIndex === 0) {
@@ -256,15 +256,15 @@ define(function (require) {
 			}
 
 			function ifStatementFormatter(arrayItem, nextItem, previousItem) {
-			
+
 				var arrayItemLower = arrayItem["Text"].toLowerCase()
 				if ((arrayItemLower === "if" || arrayItemLower === "elseif" || arrayItemLower === "else") && arrayItem["Text"] !== "\n" && previousItem["Text"] !== "\n" && previousItem["Text"] !== "\t") {
 					arrayItem["LineBreak"] = -1 //NOTE: Add single new line before IF statements
 				} // else if (arrayItemLower === "endif" && arrayItem["Text"] !== "\n" && previousItem["Text"] !== "\n" && previousItem["Text"] !== "\t") {
-//					//FUTURE: Potentially add single new line before ENDIF statements -- arrayItem["LineBreak"] = 0
-//				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] !== "\n" && nextItem["Text"] !== "@@LINEBREAK") {
-//					//					//FUTURE: Potentially add new line after ENDIF statements -- arrayItem["LineBreak"] = 0
-//				}
+				//					//FUTURE: Potentially add single new line before ENDIF statements -- arrayItem["LineBreak"] = 0
+				//				} else if ((arrayItemLower === "endif" || arrayItemLower === "then") && arrayItem["Text"] !== "\n" && nextItem["Text"] !== "@@LINEBREAK") {
+				//					//					//FUTURE: Potentially add new line after ENDIF statements -- arrayItem["LineBreak"] = 0
+				//				}
 
 				return (arrayItem["LineBreak"])
 			}
@@ -272,22 +272,40 @@ define(function (require) {
 			var commentStartIndex,
 				commentEndIndex;
 
+			//NOTE: Comment parser
 			for (var i = 0; i < json.length; i++) {
 				//NOTE: Process start comment tags
-				if (json[i]["Text"] === "/*") {
+				if (json[i]["Text"] === "/*" || json[i]["Text"] === "%%=") {
 					commentStartIndex = i
 					commentEndIndex = 0 //NOTE: Once the start has been found, restart the commentEndIndex
+					if (json[i]["Text"] === "%%=") {
+						var ignoreHTMLFunction = true
+						json[i]["Ignore"] = true
+					} else {
+						json[i]["Ignore"] = false
+					}
 
 					//NOTE: Process end comment tags
-				} else if (json[i]["Text"] === "*/") {
+				} else if (json[i]["Text"] === "*/" || json[i]["Text"] === "=%%") {
 					commentEndIndex = i
 					commentStartIndex = 0 //NOTE: Once the end has been found, restart the commentStartIndex
+					if (json[i]["Text"] === "=%%") {
+						ignoreHTMLFunction = false
+						json[i]["Ignore"] = true
+					} else {
+						json[i]["Ignore"] = false
+					}
 
 					//NOTE: Don't format the comment text
 				} else if (commentStartIndex < i && commentEndIndex === 0) {
-
+					if (ignoreHTMLFunction === true) {
+						json[i]["Ignore"] = true
+					} else {
+						json[i]["Ignore"] = false
+					}
 
 					//NOTE: Apply formatting to the text if not in comments or isn't a string
+
 				} else {
 					if (json[i]["String"] === false) {
 						json[i]["Text"] = upperCaser(json[i]["Text"])
@@ -297,6 +315,7 @@ define(function (require) {
 						json[i]["LineBreak"] = scriptBlockFormat(json[i], json[i + 1], json[i - 1])
 						json[i]["LineBreak"] = ifStatementFormatter(json[i], json[i + 1], json[i - 1])
 					}
+					json[i]["Ignore"] = false
 				}
 			}
 			return (json)
@@ -369,6 +388,12 @@ define(function (require) {
 				scriptEnd: function (item) {
 					return (item === "]%%" ? true : false)
 				},
+				vScriptStart: function (item) {
+					return (item === "%%=" ? true : false)
+				},
+				vScriptEnd: function (item) {
+					return (item === "=%%" ? true : false)
+				},
 				openBracket: function (item) {
 					return (item === "(" ? true : false)
 				},
@@ -383,6 +408,9 @@ define(function (require) {
 				},
 				doubleQuote: function (item) {
 					return (item === "\"" ? true : false)
+				},
+				operators: function (item) {
+					return ((item === "AND") || (item === "OR") ? true : false)
 				}
 			};
 
@@ -392,18 +420,33 @@ define(function (require) {
 
 					var thisText = json[i]["Text"],
 						nextText = json[i + 1]["Text"];
+					//NOTE: Accomodating for IF (@a == 3) AND (@b == 3) THEN
+					if (ruleSet.operators(thisText) === true && ruleSet.openBracket(nextText) === true) { //NOTE: Add a space after an operator
+						json.splice(i + 1, 0, {
+							Text: " ",
+							String: false
+						})
+					}
 
-					//NOTE: Only add a space afterwards if all of these are false
-					if (ruleSet.whiteSpace(thisText) === false && //NOTE: Not a recently spliced space
-						ruleSet.scriptStart(thisText) === false && //NOTE: Dont add a space after the start of the AMPscript block
-						ruleSet.scriptEnd(thisText) === false && //NOTE: Dont add a space after the end of the AMPscript block
-						ruleSet.openBracket(thisText) === false && //NOTE: Dont add a space after the opening of a bracket
-						ruleSet.openBracket(nextText) === false && //NOTE: Dont add a space if the next character is an open bracket
-						ruleSet.closeBracket(nextText) === false && //NOTE: Dont add a space after the closing of a bracket
-						ruleSet.lineBreak(nextText) === false && //NOTE: Dont add a space after a linebreak
-						thisText.includes("\t") === false && //NOTE: Dont add a space if there are multiple indents in this array item
-						thisText.includes("\n") === false //NOTE: Dont add a space if there are multiple newlines in this array item
+					//NOTE: Don't add a space afterwards if any of these are true
+					if (ruleSet.whiteSpace(thisText) === true || //NOTE: Not a recently spliced space
+						ruleSet.scriptStart(thisText) === true || //NOTE: Dont add a space after the start of the AMPscript block
+						ruleSet.scriptEnd(thisText) === true || //NOTE: Dont add a space after the end of the AMPscript block
+						ruleSet.vScriptStart(thisText) === true || //NOTE: Dont add a space after the end of the %%=v=%% block
+						ruleSet.vScriptEnd(thisText) === true || //NOTE: Dont add a space after the end of the %%=v=%% block
+						ruleSet.openBracket(thisText) === true || //NOTE: Dont add a space after the opening of a bracket
+						ruleSet.openBracket(nextText) === true || //NOTE: Dont add a space if the next character is an open bracket
+						//												ruleSet.closeBracket(thisText) === false && //NOTE: Dont add a space after the closing of a bracket
+						ruleSet.closeBracket(nextText) === true || //NOTE: Dont add a space if the next character is a closing bracket
+						ruleSet.lineBreak(nextText) === true || //NOTE: Dont add a space after a linebreak
+						ruleSet.comma(nextText) === true || //NOTE: 
+						thisText.includes("\t") === true || //NOTE: Dont add a space if there are multiple indents in this array item
+						thisText.includes("\n") === true || //NOTE: Dont add a space if there are multiple newlines in this array item
+						
+						json[i]["Ignore"] === true
 					) {
+						//Do nothing
+					} else {
 						json.splice(i + 1, 0, {
 							Text: " ",
 							String: false
@@ -412,10 +455,10 @@ define(function (require) {
 				}
 
 				if (json[i]["String"] === true) {
-                    
+
 					var thisText = json[i]["Text"],
 						nextText = json[i + 1]["Text"];
-                    
+
 					if (json[i]["StringStart"] === true && json[i - 1]["Id"] !== "BeforeStringStart") {
 
 						//FUTURE: Additional formatting before strings if required
@@ -457,7 +500,7 @@ define(function (require) {
 				outputResultArr.push(json[i]["Text"])
 			}
 			return (outputResultArr)
-		}        
+		}
 
 		//NOTE: Running things
 		var result = outputFormatting(ignoreComments(dabber(stringProperty(json))))

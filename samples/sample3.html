@@ -1,3 +1,6 @@
+
+
+
 %%[ 
 
 set @contxt = queryparameter("pgcontxt")
@@ -57,4 +60,12 @@ if empty(@contxt) then
         ,"ID", "=", @sk
     )
 endif
+
+if(@a == 3)and(@b == 3), THEN
+	var @a=2
+endif
+
 ]%%
+
+
+%%=v(@var1)=%%
